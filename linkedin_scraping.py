@@ -13,7 +13,7 @@ def linkedin_scraping(username):
    
    
    options = uc.ChromeOptions()
-   #options.add_argument("--headless")  
+   options.add_argument("--headless")  
    driver = uc.Chrome(options=options)
    
    fecha=datetime.now().strftime("%d%m%Y")
