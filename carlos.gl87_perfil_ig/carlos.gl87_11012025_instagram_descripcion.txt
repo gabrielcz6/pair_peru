@@ -1,0 +1,5 @@
+cantidad de post: 5
+cantidad de seguidores: 195
+cantidad de seguidos: 456
+nombre: Carlos Alberto Gamero Loayza
+descripcion : 

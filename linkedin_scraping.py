@@ -13,7 +13,7 @@ def linkedin_scraping(username):
    
    
    options = uc.ChromeOptions()
-   options.add_argument("--headless")  
+   #options.add_argument("--headless")  
    driver = uc.Chrome(options=options)
    
    fecha=datetime.now().strftime("%d%m%Y")
@@ -40,6 +40,7 @@ def linkedin_scraping(username):
 
 
    #
+   """
    try:
        driver.find_element(By.ID, "navigation-index-see-all-experiences").click()
        time.sleep(5)
@@ -47,13 +48,40 @@ def linkedin_scraping(username):
 
    except:
        a = driver.find_elements(By.XPATH, "//section[.//div[@id='experience']]//div[contains(@class, 'display-flex') and contains(@class, 'align-items-center')and contains(@class, 'mr1') and contains(@class, 't-bold')]//span[1]")
-       pass    
+       pass
+    """     
+   a = driver.find_elements(By.XPATH, "//section[.//div[@id='experience']]//div[contains(@class, 'display-flex') and contains(@class, 'align-items-center')and contains(@class, 'mr1') and contains(@class, 't-bold')]//span[1]")  
    
-
-   # Abrimos un archivo de texto en modo escritura
+   b = driver.find_elements(By.XPATH, "//section[.//div[@id='experience']]//div[contains(@class, 'display-flex')"     
+               "and contains(@class, 'flex-column') "
+               "and contains(@class, 'full-width')]"
+               "/span[contains(@class, 't-14') "
+               "and contains(@class, 't-normal')][1]"
+               "/span")   
+   
+       # List to store unique elements
+   unique_b = []
+   
+   # Bucle para recorrer los elementos de 'b'
+   for element in b:
+       # Verificamos si el texto ya está en la lista de elementos únicos
+       if element.text not in [e.text for e in unique_b]:
+           # Si no está repetido, lo agregamos a la lista 'unique_b'
+           unique_b.append(element)      
+   
+   input("dario")
+   # Ahora 'unique_b' contiene solo los elementos con textos únicos
+     # Y puedes continuar con el proceso que tenías para escribir en el archivo
    with open(f"{folder_name}/{username}_{fecha}_trabajo.txt", "w") as file:
-       for i in a:
-           file.write(i.text + "\n")  # Escribe cada texto en una nueva línea
+         # Iteramos las listas alternadamente
+         for i in range(max(len(a), len(unique_b))):  # Iterar hasta el tamaño máximo de las listas
+             if i < len(a):  # Si aún hay elementos en 'a'
+                 file.write(a[i].text + "\n")
+             if i < len(unique_b):  # Si aún hay elementos en 'b' sin duplicados
+                 file.write(unique_b[i].text + "\n")
+             file.write("-------------\n")    
+
+
 
 
    driver.get(f"https://www.linkedin.com/in/{username}/")
