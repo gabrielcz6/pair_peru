@@ -14,11 +14,15 @@ def linkedin_scraping(username):
    
    options = uc.ChromeOptions()
    options.add_argument("--headless")  
+   options.add_argument("--force-device-scale-factor=0.5")
    driver = uc.Chrome(options=options)
    
    fecha=datetime.now().strftime("%d%m%Y")
    
    driver.get("https://www.linkedin.com/")
+   
+
+   time.sleep(4)
 
    WebDriverWait(driver, 0.5).until(EC.presence_of_element_located((By.XPATH, "//a[contains(@href, 'login')]"))).click() 
    time.sleep(2)
@@ -30,6 +34,8 @@ def linkedin_scraping(username):
    
    
    driver.get(f"https://www.linkedin.com/in/{username}/")
+   
+   time.sleep(4)
    #-----------------------------------------------------------------------
    #usuario para scrapear
    time.sleep(5)
@@ -69,7 +75,7 @@ def linkedin_scraping(username):
            # Si no está repetido, lo agregamos a la lista 'unique_b'
            unique_b.append(element)      
    
-   input("dario")
+
    # Ahora 'unique_b' contiene solo los elementos con textos únicos
      # Y puedes continuar con el proceso que tenías para escribir en el archivo
    with open(f"{folder_name}/{username}_{fecha}_trabajo.txt", "w") as file:
@@ -85,8 +91,7 @@ def linkedin_scraping(username):
 
 
    driver.get(f"https://www.linkedin.com/in/{username}/")
-
-   
+     
    time.sleep(5)
    try: 
      a = driver.find_elements(By.XPATH, "//section[.//div[@id='education']]//div[contains(@class, 'display-flex') and contains(@class, 'align-items-center')and contains(@class, 'mr1') and contains(@class, 't-bold')]//span[1]")   
@@ -122,9 +127,13 @@ def linkedin_scraping(username):
          
          # Agregar la línea separadora
          
-     
-     driver.close()
    except Exception as e: 
-        print(e)
+      print("error: " + str(e))
 
-        
+   try:
+       driver.close()
+       time.sleep(10)
+   except Exception as e:  
+         print("error: " + str(e))
+         
+   
