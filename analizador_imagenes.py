@@ -5,7 +5,7 @@ import os
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
 
-GOOGLE_API_KEY='AIzaSyAzLKUEUVqx7MYXfYilnN-msh5N9YILTUo'
+GOOGLE_API_KEY=''
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # Configuración para caracteres especiales en la terminal de Python
