@@ -1,0 +1,30 @@
+{
+    "trabajo": [
+        "analista de clima y cultura",
+        "asistente de gestion de talento",
+        "psicologo organizacional",
+        "practicante de gestion humana",
+        "practicante universitaria"
+    ],
+    "estudio": {
+        "carrera": "psicologia",
+        "especialidad": "psicologia organizacional"
+    },
+    "lugares": [
+        "pastelerias",
+        "cafeterias"
+    ],
+    "comidas": [
+        "dulces",
+        "pasteles"
+    ],
+    "hobbies": [
+        "reposteria",
+        "hornear",
+        "estudio",
+        "viajes",
+        "deportes",
+        "fotografia",
+        "artes"
+    ]
+}

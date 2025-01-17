@@ -1,0 +1,40 @@
+{
+    "trabajo": [
+        "community manager"
+    ],
+    "estudio": {
+        "carrera": "comunicaciones",
+        "especialidad": "gestion y marketing"
+    },
+    "lugares": [
+        "restaurantes",
+        "cafeterias",
+        "bares"
+    ],
+    "comidas": [
+        "pollo frito",
+        "comida peruana",
+        "pizza",
+        "comida rapida",
+        "snacks",
+        "pastel",
+        "helado",
+        "fruta",
+        "sushi",
+        "postres",
+        "atun",
+        "tacos"
+    ],
+    "hobbies": [
+        "comer fuera",
+        "compras",
+        "fotografia",
+        "fiestas",
+        "viajes",
+        "playa",
+        "cocinar",
+        "rave"
+    ]
+    "ig_user":"anivilla123",
+    "linkedin_user":"anayka-villa-macedo-78966622b",
+}

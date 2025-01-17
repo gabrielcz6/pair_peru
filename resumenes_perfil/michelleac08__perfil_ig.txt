@@ -1,0 +1,29 @@
+{
+    "trabajo": [
+        "supervisora regional",
+        "representante medico ii cm & e",
+        "representante medico especialista",
+        "representante medico"
+    ],
+    "estudio": {
+        "carrera": "administracion de empresas",
+        "especialidad": "liderazgo empresarial"
+    },
+    "lugares": [
+        "restaurantes",
+        "bares"
+    ],
+    "comidas": [
+        "comida rapida",
+        "cerveza"
+    ],
+    "hobbies": [
+        "deportes",
+        "musica",
+        "gimnasio",
+        "gimnasia",
+        "fotografia",
+        "ejercicio",
+        "viajar"
+    ]
+}

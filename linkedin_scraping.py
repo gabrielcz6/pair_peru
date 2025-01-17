@@ -9,13 +9,13 @@ import undetected_chromedriver as uc
 from datetime import datetime
 
 
-def linkedin_scraping(username):
+def pair_linkedin_scraping(username):
    
    
    options = uc.ChromeOptions()
    options.add_argument("--headless")  
    options.add_argument("--force-device-scale-factor=0.5")
-   driver = uc.Chrome(options=options)
+   driver = uc.Chrome(options=options,version_main=131)
    
    fecha=datetime.now().strftime("%d%m%Y")
    
@@ -137,3 +137,4 @@ def linkedin_scraping(username):
          print("error: " + str(e))
          
    
+   return folder_name 

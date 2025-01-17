@@ -1,11 +1,16 @@
-from instagram_scraping import pair_scraping_Instagram
-from linkedin_scraping import linkedin_scraping
+
+from perfilanalyzer import PerfilAnalyzer
 
 
 
-#1ero debe estar como amigo antes de scrappear
+
+perfil = PerfilAnalyzer("gabrielcz6", "gabrielinteligenciaartificial")
+
+file_path = perfil.analizar_perfil()
 
 
-#pair_scraping_Instagram("carlos.gl87")
 
-linkedin_scraping("diego-ampuero-aldoradin")
+
+print(f"Perfil analizado y guardado en: {file_path}")
+
+

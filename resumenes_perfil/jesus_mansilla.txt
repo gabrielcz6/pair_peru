@@ -1,0 +1,41 @@
+{
+    "trabajo": [
+        "head of research",
+        "investment research associate",
+        "subeditor de economia y negocios",
+        "subgerente adjunto de analisis de inversiones",
+        "analista senior de inversiones"
+    ],
+    "estudio": {
+        "carrera": "economia",
+        "especialidad": "analisis de inversiones"
+    },
+    "lugares": [
+        "restaurantes",
+        "cafeterias",
+        "bares"
+    ],
+    "comidas": [
+        "pasta",
+        "tragos",
+        "carnes",
+        "comida peruana",
+        "ensaladas",
+        "desayunos",
+        "comida italiana",
+        "hamburguesas"
+    ],
+    "hobbies": [
+        "comer fuera",
+        "futbol",
+        "explorar arquitectura",
+        "ir a conciertos",
+        "turismo",
+        "musica",
+        "arte",
+        "viajar",
+        "bicicleta",
+        "reuniones sociales",
+        "socializar"
+    ]
+}

@@ -1,0 +1,34 @@
+{
+    "trabajo": [
+        "practicante profesional de analitica avanzada",
+        "fundador",
+        "desarrollador backend - data science y reconocimiento facial",
+        "coordinador cursos online"
+    ],
+    "estudio": {
+        "carrera": "ingenieria",
+        "especialidad": "ingenieria informatica"
+    },
+    "lugares": [
+        "restaurantes",
+        "hogar"
+    ],
+    "comidas": [
+        "postres",
+        "tallarines",
+        "ensaladas",
+        "superalimentos",
+        "quinoa",
+        "comida casera",
+        "carne",
+        "comida sin gluten"
+    ],
+    "hobbies": [
+        "lectura",
+        "educacion",
+        "ejercicio",
+        "cocinar",
+        "estimulacion temprana",
+        "comer"
+    ]
+}

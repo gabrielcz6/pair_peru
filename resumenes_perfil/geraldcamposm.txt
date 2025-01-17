@@ -1,0 +1,29 @@
+{
+    "trabajo": [
+        "software quality assurance engineer",
+        "data analyst intern",
+        "research assistant",
+        "investment strategy off-cycle analyst",
+        "equity investment intern"
+    ],
+    "estudio": {
+        "carrera": "economista",
+        "especialidad": "analisis de datos y finanzas"
+    },
+    "lugares": [
+        "restaurantes",
+        "cafeterias"
+    ],
+    "comidas": [
+        "bebidas",
+        "cafes",
+        "pina colada",
+        "desayunos"
+    ],
+    "hobbies": [
+        "conciertos",
+        "explorar",
+        "cine",
+        "comer fuera"
+    ]
+}

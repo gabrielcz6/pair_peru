@@ -1,0 +1,32 @@
+{
+    "trabajo": [
+        "ingeniero de control de proyectos",
+        "analista de gestion",
+        "asistente de planeamiento y control de proyectos",
+        "asistente de planeamiento y control de produccion"
+    ],
+    "estudio": {
+        "carrera": "ingenieria",
+        "especialidad": "gestion de proyectos"
+    },
+    "lugares": [
+        "restaurantes",
+        "cafeterias"
+    ],
+    "comidas": [
+        "vino",
+        "degustaciones",
+        "comida local",
+        "gastronomia internacional"
+    ],
+    "hobbies": [
+        "explorar restaurantes",
+        "fotografia",
+        "explorar lugares nuevos",
+        "baile",
+        "experiencias culturales",
+        "arte",
+        "viajar",
+        "cocinar"
+    ]
+}

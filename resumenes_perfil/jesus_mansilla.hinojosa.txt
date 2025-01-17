@@ -1,0 +1,31 @@
+{
+    "trabajo": [
+        "product owner de innovacion",
+        "asistente de prestaciones de salud",
+        "gestor operacional de reportes",
+        "procesador de datos"
+    ],
+    "estudio": {
+        "carrera": "tecnologia de la informacion",
+        "especialidad": "gestion de productos tecnologicos"
+    },
+    "lugares": [
+        "restaurantes",
+        "bares"
+    ],
+    "comidas": [
+        "chifa",
+        "cerveza",
+        "hamburguesas",
+        "dietas",
+        "comida peruana"
+    ],
+    "hobbies": [
+        "streaming",
+        "socializar",
+        "relajacion",
+        "celebraciones con amigos",
+        "comer fuera",
+        "musica"
+    ]
+}

@@ -1,0 +1,30 @@
+{
+    "trabajo": [
+        "communications and media specialist",
+        "digital planner",
+        "digital planner jr",
+        "media assistant",
+        "intern planning",
+        "practicante de logistica y produccion"
+    ],
+    "estudio": {
+        "carrera": "marketing",
+        "especialidad": "planificacion y medios digitales"
+    },
+    "lugares": [
+        "restaurantes",
+        "cafeterias"
+    ],
+    "comidas": [
+        "pescado",
+        "comidas locales"
+    ],
+    "hobbies": [
+        "cocinar",
+        "ver atardeceres",
+        "viajar",
+        "reposteria",
+        "celebraciones familiares",
+        "fotografia"
+    ]
+}

@@ -1,0 +1,41 @@
+{
+    "trabajo": [
+        "asesor de ventas comerciales"
+    ],
+    "estudio": {
+        "carrera": "comercio",
+        "especialidad": "ventas comerciales"
+    },
+    "lugares": [
+        "restaurantes",
+        "bares",
+        "discotecas",
+        "cafeterias",
+        "gimnasios",
+        "playas",
+        "tiendas",
+        "eventos deportivos",
+        "ciudades",
+        "campo"
+    ],
+    "comidas": [
+        "carne",
+        "comida de restaurante",
+        "comida navidena",
+        "frutas"
+    ],
+    "hobbies": [
+        "familia",
+        "automovilismo",
+        "deporte",
+        "moda",
+        "fotografia",
+        "viajes",
+        "deportes",
+        "bailar",
+        "socializar",
+        "fiestas",
+        "amistades",
+        "viajar"
+    ]
+}

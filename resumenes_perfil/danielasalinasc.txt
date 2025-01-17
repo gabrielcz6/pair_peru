@@ -1,0 +1,27 @@
+{
+    "trabajo": [
+        "supervisor senior research y design",
+        "consultor experience design e innovacion",
+        "marketing and digital lead",
+        "country marketing coordinator",
+        "marketing associate"
+    ],
+    "estudio": {
+        "carrera": "diseno y marketing",
+        "especialidad": "investigacion y experiencia de usuario"
+    },
+    "lugares": [],
+    "comidas": [
+        "comida peruana",
+        "comida rapida",
+        "pizza"
+    ],
+    "hobbies": [
+        "explorar la naturaleza",
+        "leer",
+        "fotografia",
+        "musica",
+        "arte",
+        "viajar"
+    ]
+}

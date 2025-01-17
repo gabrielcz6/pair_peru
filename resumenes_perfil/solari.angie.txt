@@ -1,0 +1,25 @@
+{
+    "trabajo": [
+        "abogada",
+        "consultora legal"
+    ],
+    "estudio": {
+        "carrera": "derecho",
+        "especialidad": "derecho de la empresa"
+    },
+    "lugares": [
+        "restaurantes",
+        "cafeterias"
+    ],
+    "comidas": [
+        "sushi",
+        "comida rapida"
+    ],
+    "hobbies": [
+        "explorar restaurantes",
+        "cocinar",
+        "viajes familiares",
+        "creacion de recuerdos",
+        "momentos en familia"
+    ]
+}

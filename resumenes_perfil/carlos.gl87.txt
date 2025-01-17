@@ -1,0 +1,25 @@
+{
+    "trabajo": [
+        "growth head",
+        "senior adviser",
+        "consejo consultivo",
+        "director programa ejecutivo",
+        "chief data officer (cdo)"
+    ],
+    "estudio": {
+        "carrera": "economista",
+        "especialidad": "analitica avanzada e inteligencia artificial"
+    },
+    "lugares": [
+        "restaurantes",
+        "food trucks"
+    ],
+    "comidas": [
+        "comida mexicana",
+        "comida local"
+    ],
+    "hobbies": [
+        "explorar restaurantes",
+        "comer fuera"
+    ]
+}
