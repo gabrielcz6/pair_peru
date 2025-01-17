@@ -35,6 +35,6 @@
         "cocinar",
         "rave"
     ]
-    "ig_user":"anivilla123",
-    "linkedin_user":"anayka-villa-macedo-78966622b",
+    "ig_user":"usuario de ig",
+    "linkedin_user":"usuario de linkedin",
 }
