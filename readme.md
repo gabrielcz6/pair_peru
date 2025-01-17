@@ -5,56 +5,45 @@ reemplazarla por el bloque try except como se ve en la imagen.
 
 
 
-result_linkedin:trabajo 
+resultado_salida_json:
 
-```json
-{      
-    "tipostrabajo": [
-        "Head COE Growth, Advanced Analytics & AI",
-        "Senior Adviser",
-        "Consejo Consultivo del Fondo Talento Digital",
-        "Director Programa Ejecutivo en Data Science",
-        "CDO - Data, BI & Advanced Analytics"
-    ]
-}
-
-result_linkedin_estudio
-```json
 {
-    "carrera": "Economista",
-    "especialidad": "Machine Learning y Analítica Avanzada"
-}
-
-result_ig_lugares_comida_hobbie
-
-```json
-{
-    "lugares_visitados": [
-        "jardines",
-        "parques"
+    "trabajo": [
+        "community manager"
+    ],
+    "estudio": {
+        "carrera": "comunicaciones",
+        "especialidad": "gestion y marketing"
+    },
+    "lugares": [
+        "restaurantes",
+        "cafeterias",
+        "bares"
     ],
     "comidas": [
+        "pollo frito",
         "comida peruana",
-        "superalimentos",
-        "pasta"
+        "pizza",
+        "comida rapida",
+        "snacks",
+        "pastel",
+        "helado",
+        "fruta",
+        "sushi",
+        "postres",
+        "atun",
+        "tacos"
     ],
     "hobbies": [
-        "lectura",
-        "educación",
-        "desarrollo infantil",
-        "tecnología",
-        "cuidado de plantas",
-        "fitness"
+        "comer fuera",
+        "compras",
+        "fotografia",
+        "fiestas",
+        "viajes",
+        "playa",
+        "cocinar",
+        "rave"
     ]
+    "ig_user":"anivilla123",
+    "linkedin_user":"anayka-villa-macedo-78966622b",
 }
-```
-
-resultado_fotos
-
-```json
-{
-  "comidas": ["Carne", "Ensaladas", "Comida casera", "Pollo a la brasa", "Comida rápida", "Dulces", "Vegetales"],  
-  "lugares": ["Restaurantes", "Hogar", "Parques", "Playas", "Centros comerciales", "Baños públicos", "Oficinas"],  
-  "hobbies": ["Crianza", "Jardinería", "Fotografía", "Cocina", "Pintura", "Lectura", "Música", "Informática",  "Estar en familia"]
-}
-```
