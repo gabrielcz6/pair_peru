@@ -10,9 +10,18 @@ from streamlit_option_menu import option_menu
 
 # Función de ejemplo para generar un resumen
 def generar_resumen(usuario_id):
-    jupiter_instance = jupiter_class()
-    resumen = jupiter_instance.summarize_profile_with_llm(usuario_id)
-    st.write(resumen)
+    inserter=MongoDBInserter()
+    resumen= inserter.get_resumen_by_id(usuario_id)
+
+    if resumen:
+        print("resumen recuperado de la bd")
+        st.write(resumen)    
+    else:
+        jupiter_instance = jupiter_class()
+        resumen = jupiter_instance.summarize_profile_with_llm(usuario_id)
+        resumen_bd = {"id_usuario": f"{usuario_id}","resumen": f"""{resumen}"""}
+        inserter.insert_resumen(resumen_bd)
+        st.write(resumen)
 
 
 
@@ -77,6 +86,7 @@ def mostrar_usuarios():
 
         if st.button("Generar resumen para el usuario seleccionado"):
             with st.spinner(f"Generando resumen para el usuario con ID {st.session_state.usuario_seleccionado}"):
+             
              generar_resumen(st.session_state.usuario_seleccionado)
 
 # Función para hacer pairing entre usuarios
