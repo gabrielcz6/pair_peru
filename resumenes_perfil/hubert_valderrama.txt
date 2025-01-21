@@ -1,0 +1,19 @@
+{
+    "trabajo": [],
+    "estudio": {
+        "carrera": "ingenieria",
+        "especialidad": "ingenieria informatica"
+    },
+    "lugares": [
+        "restaurantes",
+        "cafeterias"
+    ],
+    "comidas": [
+        "comida rapida",
+        "comida india"
+    ],
+    "hobbies": [
+        "explorar gastronomia",
+        "comer fuera"
+    ]
+}

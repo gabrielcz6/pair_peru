@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
-import os
+import os,pandas as pd
 
 class MongoDBInserter:
     def __init__(self, database_name="profilesdatabase", collection_name="profiles"):
@@ -24,5 +24,16 @@ class MongoDBInserter:
         finally:
             self.client.close()
 
+    def get_all_users(self):
+        try:
+            # Recuperar todos los documentos
+            users = list(self.collection.find())
+            return users
+        except Exception as e:
+            raise Exception(f"Error while fetching users: {e}")
+        finally:
+            self.client.close()        
 
 
+
+# Ejemplo de uso para convertir los usuarios en un DataFrame

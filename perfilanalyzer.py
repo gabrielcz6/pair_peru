@@ -11,14 +11,16 @@ from utils.db_connection.mongodb import MongoDBInserter
 from utils.parse_combine_json import parse_json_from_string, combinar_datos
 
 class PerfilAnalyzer:
-    def __init__(self, ig_username, linkedin_username):
+    def __init__(self, ig_username, linkedin_username,genero,id_usuario):
         # Cargar las variables de entorno desde el archivo .env
         load_dotenv()
 
         # Acceder a las claves
         self.api_key = os.getenv("API_KEY")
         self.google_api_key = os.getenv("GOOGLE_API_KEY")
-
+        
+        self.id_usuario=id_usuario
+        self.genero=genero
         self.ig_username = ig_username
         self.linkedin_username = linkedin_username
 
@@ -72,6 +74,8 @@ class PerfilAnalyzer:
           jsonfinal = json.loads(jsonfinal)
           jsonfinal["ig_user"] = self.ig_username
           jsonfinal["linkedin_user"] = self.linkedin_username
+          jsonfinal["id_usuario"] = self.id_usuario
+          jsonfinal["genero"] = self.genero
 
          # input(type(jsonfinal))
          # Crear una instancia de la clase y insertar los datos

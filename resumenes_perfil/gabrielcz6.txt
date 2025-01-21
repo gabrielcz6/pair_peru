@@ -11,24 +11,26 @@
     },
     "lugares": [
         "restaurantes",
-        "hogar"
+        "casa"
     ],
     "comidas": [
-        "postres",
-        "tallarines",
-        "ensaladas",
-        "superalimentos",
         "quinoa",
+        "tallarines",
         "comida casera",
-        "carne",
-        "comida sin gluten"
+        "ensaladas",
+        "alimentos sin gluten",
+        "postres",
+        "superfoods",
+        "trigo cocido",
+        "carne"
     ],
     "hobbies": [
-        "lectura",
         "educacion",
-        "ejercicio",
+        "comer",
+        "workout",
+        "desarrollo infantil",
         "cocinar",
-        "estimulacion temprana",
-        "comer"
+        "estudio de metodologias como scrum",
+        "lectura"
     ]
 }

@@ -1,0 +1,24 @@
+{
+    "trabajo": [
+        "practicante analista desarrollador",
+        "cofundador"
+    ],
+    "estudio": {
+        "carrera": "ingenieria",
+        "especialidad": "ingenieria informatica"
+    },
+    "lugares": [
+        "parques",
+        "ciudades",
+        "food trucks",
+        "restaurantes"
+    ],
+    "comidas": [
+        "picnic",
+        "comida callejera"
+    ],
+    "hobbies": [
+        "viajar",
+        "fotografia"
+    ]
+}
