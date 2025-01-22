@@ -2,8 +2,6 @@ import json
 from utils.db_connection.mongodb import MongoDBInserter
 import pandas as pd
 import openai
-import google.generativeai as genai
-
 
 
 class jupiter_class:
@@ -78,7 +76,8 @@ class jupiter_class:
             if existconversation != False:
                print("conversacion existente!")
                conversation,score=existconversation
-            else:                
+            else:
+                
                existconversationviceversa=inserter.busca_conversacion_pairing(agent.id_usuario,selected_agent.id_usuario)
                
                if existconversationviceversa != False:
@@ -86,7 +85,7 @@ class jupiter_class:
                   conversation,score=existconversationviceversa
                else:
                   #si no encuentra a con b ni b con a crea nueva converesacion
-                  conversation, score = self.simulate_conversation(selected_agent, agent)  
+                  conversation, score = self.simulate_conversation(selected_agent, agent)   
             
             print(agent.id_usuario)
             
@@ -158,19 +157,23 @@ class jupiter_class:
     - Comidas favoritas: {', '.join(matched_agent.comidas)}
     - Hobbies: {', '.join(matched_agent.hobbies)}
 
+    Conversación:
+    {conversation_text}
+
     Con base en la conversación y los perfiles de las personas, escribe un resumen explicando por qué estas dos personas son un buen match. Debe de ser un resumen corto. Condenza todas las ideas en un parrafo
     """
-    #___
-    self.model1 = genai.GenerativeModel("gemini-1.5-pro")
-    response = self.model1.start_chat(
-            history=[
-                {"role": "model", "parts": "Eres un analista experto en relaciones y compatibilidad."},
-                {"role": "user", "parts": prompt}
-            ]
-        )
-    response_message = response.send_message(f"Conversación: {conversation_text}")
-    return response_message.text
+    # Enviar el prompt al modelo
+    response = openai.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=[
+            {"role": "system", "content": "Eres un analista experto en relaciones y compatibilidad."},
+            {"role": "user", "content": prompt}
+        ]
+    )
 
+    # Obtener el resumen generado por el modelo
+    response_message = response.choices[0].message.content
+    return response_message
 
 
 
@@ -186,9 +189,6 @@ class GPTAgent:
         self.hobbies = profile["hobbies"]
         self.sexo = profile["genero"]
         self.id_usuario = profile["id_usuario"]
-
-        self.model1 = genai.GenerativeModel("gemini-1.5-pro")
-        
     def generate_message(self, other_agent):
         """
         Genera un mensaje inicial basado en las características del otro agente.
@@ -212,15 +212,17 @@ class GPTAgent:
         - Comidas favoritas: {', '.join(other_agent.comidas)}
         - Hobbies: {', '.join(other_agent.hobbies)}
 
+        Escribe un mensaje inicial para iniciar una conversación interesante basada en temas en común.
         """
-        response = self.model1.start_chat(
-            history=[
-                {"role": "model", "parts": "Eres un asistente que genera conversaciones interesantes , esto no debe suponer nada, debera ser la conversacion optimizada ."},
-                {"role": "user", "parts": prompt}
+        response = openai.chat.completions.create(
+            model="gpt-4-turbo",
+            messages=[
+                {"role": "system", "content": "Eres un asistente que genera conversaciones interesantes."},
+                {"role": "user", "content": prompt}
             ]
         )
-        response_message = response.send_message(f"Escribe un mensaje inicial para iniciar una conversación interesante basada en temas en común,te prohibo palabras o frases genericos como listas con corchetes : [] dentro del texto.")
-        return response_message.text
+        response_message = response.choices[0].message.content
+        return response_message
 
     def respond_to_message(self, incoming_message):
         """
@@ -236,15 +238,16 @@ class GPTAgent:
         - Comidas favoritas: {', '.join(self.comidas)}
         - Hobbies: {', '.join(self.hobbies)}
 
-        "
+        Mensaje recibido: "{incoming_message}"
 
-        Responde al mensaje, conectando con la persona y encontrando intereses en común, basándote solo en los datos disponibles en el texto.
+        Responde al mensaje, conectando con la persona y encontrando intereses en común.
         """
-        response = self.model1.start_chat(
-            history=[
-                {"role": "model", "parts": "Eres un asistente que genera conversaciones interesantes solo basado en temas en común, te prohibo palabras o frases genericos como listas con corchetes : [] dentro del texto."},
-                {"role": "user", "parts": prompt}
+        response = openai.chat.completions.create(
+            model="gpt-4-turbo",
+            messages=[
+                {"role": "system", "content": "Eres un asistente que responde a mensajes en conversaciones."},
+                {"role": "user", "content": prompt}
             ]
         )
-        response_message = response.send_message(f"Mensaje recibido: {incoming_message}")
-        return response_message.text
+        response_message = response.choices[0].message.content
+        return response_message

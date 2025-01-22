@@ -122,7 +122,8 @@ def proceso_pairing():
                      selected_agent = agent
                      
                      break
-                print(selected_agent.id_usuario)  
+                print(selected_agent.id_usuario) 
+
                 # Encontrar los mejores matches
                 jupiter_instance2 = jupiter_class()
                 top_matches = jupiter_instance2.find_top_matches(selected_agent, agents)

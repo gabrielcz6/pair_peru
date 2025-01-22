@@ -15,6 +15,42 @@ class MongoDBInserter:
         self.database = self.client[database_name]
         self.collection = self.database[collection_name]
 
+    def busca_conversacion_pairing(self, user1,user2):
+        user1=user1
+        user2=user2
+        conversation_collection = self.database["conversations"]
+        query={
+            "id_user_agent1" : f"{user1}",
+            "id_user_agent2" : f"{user2}",
+             }
+        documento = conversation_collection.find_one(query)
+        
+
+        # Comprobar si se encontró el documento y obtener el 'score'
+        if documento is None:
+            return False
+            
+        else:
+            conversation_original = [(item["user"], item["message"]) for item in documento["conversation"]]
+            return conversation_original,int(documento["score"])
+        
+
+    def insertar_conversacion_pairing(self, user1,user2,conversation,score):
+        #guardando la conversacion y el score en la bd
+        conversation_bd = [{"user": user, "message": message} for user, message in conversation]
+        documento = {
+        "id_user_agent1": f"{user1}",
+        "id_user_agent2": f"{user2}",
+         "conversation": conversation_bd,
+         "score":f"{score}"
+        }
+        # Cambiar a la colección 'summary_profiles'
+        conversation_collection = self.database["conversations"]
+        result = conversation_collection.insert_one(documento)
+        print(f"Documento de conversacion insertado con id: {result.inserted_id}")
+        #input("subesubesube")
+
+
     def insert_resumen(self, data):
         try:
             # Cambiar a la colección 'summary_profiles'
@@ -23,8 +59,7 @@ class MongoDBInserter:
             print(f"Documento de resumen insertado con id: {result.inserted_id}")
         except Exception as e:
             raise Exception(f"The following error occurred: {e}")
-        finally:
-            self.client.close()      
+        
 
     
 
