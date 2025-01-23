@@ -261,8 +261,12 @@ def proceso_chat():
         if isinstance(mensaje, tuple) and len(mensaje) == 2:
             usuario, texto = mensaje
             #genderuser1=inserter.busca_sexo(usuario)
-
-            avatar = f"avatars/{usuario}.JPG"  # Avatar para masculino
+            
+            #avatar = f"avatars/{usuario}.JPG"  # Avatar para masculino
+            avatar = os.path.join("avatars", f"{usuario}.JPG")  # Reemplaza usuario con el nombre apropiado
+            if not os.path.isfile(avatar):
+                st.error(f"El archivo {avatar} no existe")
+                avatar = "user"  # Avatar por defecto
             #avatar = os.path.join(current_dir, "avatars", f"{usuario}.jpg")
 
             with st.chat_message("user",avatar=avatar):
