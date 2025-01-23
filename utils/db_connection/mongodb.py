@@ -51,7 +51,7 @@ class MongoDBInserter:
         
         # Comprobar si se encontró el documento y obtener el 'score'
         if documento is None:
-            return False,user1temp,user2temp
+            return False,user1temp,user2temp,invertido
         else:
             conversation_original = [(item["user"], item["message"]) for item in documento["conversation"]]
             return conversation_original, int(documento["score"]),user1,user2,invertido
