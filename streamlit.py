@@ -249,11 +249,13 @@ def proceso_chat():
             st.write(f"{usuario2} es la segunda opcion match de {usuario1} :heart_on_fire:")
         else:
             st.write(f"{usuario2} no es un match registrado para  {usuario1} :x:")   
+
     elif matches!=False and conversacion[4]==True:    
-        if matches[0]==usuario1:
+        if matches[0]==usuario2:
             print(f"{usuario2} es la primera opcion match de {usuario1} ")
             st.write(f"{usuario2} es la primera opcion match de {usuario1} :heart_on_fire:")
-        elif matches[1]==usuario1:
+        
+        elif matches[1]==usuario2:
             print(f"{usuario2} es la segunda opcion match de {usuario1} ")
             st.write(f"{usuario2} es la segunda opcion match de {usuario1} :heart_on_fire:")
         else:
