@@ -263,7 +263,7 @@ def proceso_chat():
             #genderuser1=inserter.busca_sexo(usuario)
             
             #avatar = f"avatars/{usuario}.JPG"  # Avatar para masculino
-            avatar = os.path.join("avatars", f"{usuario}.JPG")  # Reemplaza usuario con el nombre apropiado
+            avatar = os.path.join("avatars", f"{usuario}.jpg")  # Reemplaza usuario con el nombre apropiado
             if not os.path.isfile(avatar):
                 st.error(f"El archivo {avatar} no existe")
                 avatar = "user"  # Avatar por defecto
