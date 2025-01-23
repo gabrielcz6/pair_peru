@@ -20,7 +20,6 @@ class MongoDBInserter:
     def busca_conversacion_pairing(self, user1, user2):
         user1 = user1
         user2 = user2
-        invertido = False
         conversation_collection = self.database["conversations"]
         
         # Primera búsqueda: user1 y user2
@@ -41,20 +40,13 @@ class MongoDBInserter:
         # Si no se encuentra, intentar con la segunda búsqueda
         if documento is None:
             documento = conversation_collection.find_one(query2)
-            user1temp = user1
-            user2temp = user2
-            user1 = user2temp
-            user2 = user1temp
-            invertido = True
-
-
         
         # Comprobar si se encontró el documento y obtener el 'score'
         if documento is None:
             return False
         else:
             conversation_original = [(item["user"], item["message"]) for item in documento["conversation"]]
-            return conversation_original, int(documento["score"]),user1,user2,invertido
+            return conversation_original, int(documento["score"])
         
     def busca_matches(self, user_id):
         # Seleccionando la base de datos y la colección
