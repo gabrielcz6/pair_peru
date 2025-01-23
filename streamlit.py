@@ -262,11 +262,11 @@ def proceso_chat():
             usuario, texto = mensaje
             #genderuser1=inserter.busca_sexo(usuario)
             try:
-             avatar = f"avatars/{usuario}.JPG"  
+             avatar = f"./avatars/{usuario}.JPG"  
              #avatar = os.path.join("avatars", f"{usuario}.jpg")  # Reemplaza usuario con el nombre apropiado
             except:
              try:
-              avatar = f"avatars/{usuario}.jpg"    
+              avatar = f"./avatars/{usuario}.jpg"    
               #avatar = os.path.join("avatars", f"{usuario}.JPG")  # Reemplaza usuario con el nombre apropiado
              except:
                 avatar = "user"  # Avatar por defecto
