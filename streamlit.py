@@ -78,8 +78,7 @@ def cargar_usuarios_a_session_state():
 def generar_resumen(usuario_id):
     inserter=MongoDBInserter()
     resumen= inserter.get_resumen_by_id(usuario_id)
-    inserter.close_connection()
-
+    
     if resumen:
         print("resumen recuperado de la bd")
         st.write(resumen)    
@@ -89,6 +88,7 @@ def generar_resumen(usuario_id):
         resumen_bd = {"id_usuario": f"{usuario_id}","resumen": f"""{resumen}"""}
         inserter.insert_resumen(resumen_bd)
         st.write(resumen)
+        inserter.close_connection()
 
 
 
