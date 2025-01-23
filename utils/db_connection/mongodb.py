@@ -40,6 +40,12 @@ class MongoDBInserter:
         # Si no se encuentra, intentar con la segunda búsqueda
         if documento is None:
             documento = conversation_collection.find_one(query2)
+            user1temp = user1
+            user2temp = user2
+            user1 = user2temp
+            user2 = user1temp
+
+
         
         # Comprobar si se encontró el documento y obtener el 'score'
         if documento is None:

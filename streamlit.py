@@ -235,7 +235,7 @@ def proceso_chat():
     
     inserter=MongoDBInserter() 
     matches = inserter.busca_matches(usuario1)
-    conversacion=inserter.busca_conversacion_pairing(usuario1,usuario2)  
+    conversacion,usuario1,usuario2=inserter.busca_conversacion_pairing(usuario1,usuario2)  
     inserter.close_connection()
     
     if matches!=False:    
@@ -245,6 +245,8 @@ def proceso_chat():
         elif matches[1]==usuario2:
             print(f"{usuario2} es la segunda opcion match de {usuario1} ")
             st.write(f"{usuario2} es la segunda opcion match de {usuario1} :heart_on_fire:")
+
+
         else:
             st.write(f"{usuario2} no es un match registrado para  {usuario1} :x:")    
     else:
