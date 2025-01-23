@@ -5,6 +5,7 @@ import pandas as pd
 from utils.db_connection.mongodb import MongoDBInserter
 from utils.jupiter import jupiter_class, GPTAgent
 from streamlit_option_menu import option_menu
+import os
 
 
 def getusersdict():
@@ -261,8 +262,8 @@ def proceso_chat():
             usuario, texto = mensaje
             #genderuser1=inserter.busca_sexo(usuario)
 
-            avatar = f"avatars/{usuario}.jpg"  # Avatar para masculino
-        
+            avatar = f"avatars/{usuario}.JPG"  # Avatar para masculino
+            #avatar = os.path.join(current_dir, "avatars", f"{usuario}.jpg")
 
             with st.chat_message("user",avatar=avatar):
                 st.write(f"{usuario}: \n\n{texto.strip()}")
