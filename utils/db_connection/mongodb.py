@@ -15,40 +15,102 @@ class MongoDBInserter:
         self.database = self.client[database_name]
         self.collection = self.database[collection_name]
 
-    def busca_conversacion_pairing(self, user1,user2):
-        user1=user1
-        user2=user2
-        conversation_collection = self.database["conversations"]
-        query={
-            "id_user_agent1" : f"{user1}",
-            "id_user_agent2" : f"{user2}",
-             }
-        documento = conversation_collection.find_one(query)
         
 
+    def busca_conversacion_pairing(self, user1, user2):
+        user1 = user1
+        user2 = user2
+        conversation_collection = self.database["conversations"]
+        
+        # Primera búsqueda: user1 y user2
+        query1 = {
+            "id_user_agent1": f"{user1}",
+            "id_user_agent2": f"{user2}",
+        }
+        
+        # Segunda búsqueda: user2 y user1 (en caso de que no se encuentre la primera)
+        query2 = {
+            "id_user_agent1": f"{user2}",
+            "id_user_agent2": f"{user1}",
+        }
+        
+        # Intentar encontrar el documento con la primera búsqueda
+        documento = conversation_collection.find_one(query1)
+        
+        # Si no se encuentra, intentar con la segunda búsqueda
+        if documento is None:
+            documento = conversation_collection.find_one(query2)
+        
         # Comprobar si se encontró el documento y obtener el 'score'
         if documento is None:
             return False
-            
         else:
             conversation_original = [(item["user"], item["message"]) for item in documento["conversation"]]
-            return conversation_original,int(documento["score"])
+            return conversation_original, int(documento["score"])
         
-
+    def busca_matches(self, user_id):
+        # Seleccionando la base de datos y la colección
+        profiles_collection = self.database["profiles"]
+        # Definiendo el filtro para encontrar el documento específico
+        filtro = {"id_usuario": user_id}
+        # Buscando el documento
+        documento = profiles_collection.find_one(filtro)
+        # Comprobar si se encontró el documento y obtener los 'matches'
+        if documento is None:
+            return False
+        else:
+            return documento["match1"], documento["match2"]    
+        
+    def busca_sexo(self, user_id):
+        # Seleccionando la base de datos y la colección
+        profiles_collection = self.database["profiles"]
+        # Definiendo el filtro para encontrar el documento específico
+        filtro = {"id_usuario": user_id}
+        # Buscando el documento
+        documento = profiles_collection.find_one(filtro)
+        # Comprobar si se encontró el documento y obtener los 'matches'
+        if documento is None:
+            return False
+        else:
+            return documento["genero"] 
+            
+    def insertar_matches(self, user_id, match1, match2):
+      
+       # Seleccionando la base de datos y la colección
+       profiles_collection = self.database["profiles"]      
+       # Definiendo el filtro para encontrar el documento específico
+       filtro = {"id_usuario": user_id}    
+       # Campos a añadir o modificar
+       nuevos_campos = {
+           "$set": {
+               "match1": match1,
+               "match2": match2
+           }
+       }
+       
+       # Actualizando el documento
+       result = profiles_collection.update_one(filtro, nuevos_campos)
+       
+       # Mensaje de confirmación
+       if result.matched_count > 0:
+           print(f"Documento con ID {user_id} actualizado exitosamente.")
+       else:
+           print(f"No se encontró un documento con el ID {user_id}.")
+   
     def insertar_conversacion_pairing(self, user1,user2,conversation,score):
-        #guardando la conversacion y el score en la bd
-        conversation_bd = [{"user": user, "message": message} for user, message in conversation]
-        documento = {
-        "id_user_agent1": f"{user1}",
-        "id_user_agent2": f"{user2}",
-         "conversation": conversation_bd,
-         "score":f"{score}"
-        }
-        # Cambiar a la colección 'summary_profiles'
-        conversation_collection = self.database["conversations"]
-        result = conversation_collection.insert_one(documento)
-        print(f"Documento de conversacion insertado con id: {result.inserted_id}")
-        #input("subesubesube")
+           #guardando la conversacion y el score en la bd
+           conversation_bd = [{"user": user, "message": message} for user, message in conversation]
+           documento = {
+           "id_user_agent1": f"{user1}",
+           "id_user_agent2": f"{user2}",
+            "conversation": conversation_bd,
+            "score":f"{score}"
+           }
+           # Cambiar a la colección 'summary_profiles'
+           conversation_collection = self.database["conversations"]
+           result = conversation_collection.insert_one(documento)
+           print(f"Documento de conversacion insertado con id: {result.inserted_id}")
+           #input("subesubesube")
 
 
     def insert_resumen(self, data):

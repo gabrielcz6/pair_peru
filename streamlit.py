@@ -7,11 +7,78 @@ from utils.jupiter import jupiter_class, GPTAgent
 from streamlit_option_menu import option_menu
 
 
+def getusersdict():
+    inserter=MongoDBInserter()
+    profiles = inserter.get_all_users()
+    inserter.close_connection()
+    return profiles
 
-# Función de ejemplo para generar un resumen
+def cargar_usuarios_a_dataframe():
+    """
+    Carga los datos de usuarios desde MongoDB, los convierte a un DataFrame 
+    y los guarda en session_state bajo la clave 'df_usuarios'.
+    
+    Returns:
+        list: Lista de IDs de usuarios.
+    """
+    # Crear instancia de MongoDBInserter
+    inserter = MongoDBInserter()
+    
+    try:
+        # Obtener todos los usuarios desde la base de datos
+        users = inserter.get_all_users()
+        
+        # Convertir los datos a un DataFrame
+        df_usuarios = pd.DataFrame(users)
+        
+        # Filtrar columnas relevantes y guardar en session_state
+        st.session_state.df_usuarios = df_usuarios[[
+            "id_usuario", "ig_user", "linkedin_user", "genero", "trabajo", "estudio", "hobbies", "lugares", "comidas"
+        ]]
+
+    finally:
+        # Asegurar el cierre de la conexión a la base de datos
+        inserter.close_connection()
+
+        
+        # Retornar lista de IDs de usuarios
+        return st.session_state.df_usuarios
+
+def cargar_usuarios_a_session_state():
+    """
+    Carga los datos de usuarios desde MongoDB, los convierte a un DataFrame 
+    y los guarda en session_state bajo la clave 'df_usuarios'.
+    
+    Returns:
+        list: Lista de IDs de usuarios.
+    """
+    # Crear instancia de MongoDBInserter
+    inserter = MongoDBInserter()
+    
+    try:
+        # Obtener todos los usuarios desde la base de datos
+        users = inserter.get_all_users()
+        
+        # Convertir los datos a un DataFrame
+        df_usuarios = pd.DataFrame(users)
+        
+        # Filtrar columnas relevantes y guardar en session_state
+        st.session_state.df_usuarios = df_usuarios[[
+            "id_usuario", "ig_user", "linkedin_user", "genero", "trabajo", "estudio", "hobbies", "lugares", "comidas"
+        ]]
+        
+        
+        # Retornar lista de IDs de usuarios
+        return st.session_state.df_usuarios["id_usuario"].tolist()
+    
+    finally:
+        # Asegurar el cierre de la conexión a la base de datos
+        inserter.close_connection()
+
 def generar_resumen(usuario_id):
     inserter=MongoDBInserter()
     resumen= inserter.get_resumen_by_id(usuario_id)
+    inserter.close_connection()
 
     if resumen:
         print("resumen recuperado de la bd")
@@ -58,14 +125,8 @@ def mostrar_usuarios():
 
     # Botón para cargar los usuarios
     if st.button("Ver todos los usuarios"):
-        inserter = MongoDBInserter()
-        users = inserter.get_all_users()
-        df_usuarios = pd.DataFrame(users)
-
         # Guardar en session_state
-        st.session_state.df_usuarios = df_usuarios[[
-            "id_usuario", "ig_user", "linkedin_user", "genero", "trabajo", "estudio", "hobbies", "lugares", "comidas"
-        ]]
+        st.session_state.df_usuarios = cargar_usuarios_a_dataframe()
 
     # Mostrar la tabla si está en session_state
     if "df_usuarios" in st.session_state:
@@ -81,8 +142,6 @@ def mostrar_usuarios():
         # Si el usuario seleccionado cambia, se actualiza session_state y se reflejará en el selectbox
         if usuario_seleccionado != st.session_state.usuario_seleccionado:
             st.session_state.usuario_seleccionado = usuario_seleccionado
-                
-        
 
         if st.button("Generar resumen para el usuario seleccionado"):
             with st.spinner(f"Generando resumen para el usuario con ID {st.session_state.usuario_seleccionado}"):
@@ -98,14 +157,12 @@ def proceso_pairing():
     # Seleccionar un usuario con manejo de estado
     if "usuario_seleccionado" not in st.session_state:
             st.session_state.usuario_seleccionado = None
-    inserter = MongoDBInserter()
-    profiles = inserter.get_all_users()
-    df_usuarios = pd.DataFrame(profiles)
+    
+    profiles= getusersdict()
+    st.session_state.df_usuarios = cargar_usuarios_a_dataframe()
 
-        # Guardar en session_state
-    st.session_state.df_usuarios = df_usuarios[[
-            "id_usuario", "ig_user", "linkedin_user", "genero", "trabajo", "estudio", "hobbies", "lugares", "comidas"
-        ]]
+
+
     st.session_state.usuario_seleccionado = st.selectbox(
             "Selecciona usuario",
             st.session_state.df_usuarios["id_usuario"].tolist(),
@@ -136,10 +193,8 @@ def proceso_pairing():
                 print(df_matches)
                 ## Crear un resumen del match
                 # Obtener el mejor match
-                best_match1 = top_matches[0]  # El primer elemento es el mejor match
-                best_match2 = top_matches[1]  # El segundo elemento es el segundo mejor match
-                matched_agent_id1, match_score, conversation1 = best_match1
-                matched_agent_id2, match_score, conversation2 = best_match2
+                matched_agent_id1, match_score, conversation1 = top_matches[0] #top1
+                matched_agent_id2, match_score, conversation2 = top_matches[1] #top2
                 
                 # Encontrar el agente correspondiente
                 matched_agent1 = next(agent for agent in agents if agent.id_usuario == matched_agent_id1)
@@ -164,6 +219,65 @@ def proceso_pairing():
                 
              #generar_resumen(st.session_state.usuario_seleccionado)
     
+def proceso_chat():
+    st.header("Chat pairing") 
+    
+    usuarios = cargar_usuarios_a_session_state()
+    # Configuración de diseño con columnas
+    col1, col2 = st.columns(2)
+     
+    with col1:
+      usuario1 = st.selectbox("Selecciona el primer usuario:", usuarios, key="usuario1")
+    # Menú desplegable en la segunda columna
+    with col2:
+      usuario2 = st.selectbox("Selecciona el segundo usuario:", usuarios, key="usuario2")
+    
+    inserter=MongoDBInserter() 
+    matches = inserter.busca_matches(usuario1)
+    conversacion=inserter.busca_conversacion_pairing(usuario1,usuario2)  
+    inserter.close_connection()
+    
+    if matches!=False:    
+        if matches[0]==usuario2:
+            print(f"{usuario2} es la primera opcion match de {usuario1} ")
+            st.write(f"{usuario2} es la primera opcion match de {usuario1} :heart_on_fire:")
+        elif matches[1]==usuario2:
+            print(f"{usuario2} es la segunda opcion match de {usuario1} ")
+            st.write(f"{usuario2} es la segunda opcion match de {usuario1} :heart_on_fire:")
+        else:
+            st.write(f"{usuario2} no es un match registrado para  {usuario1} :x:")    
+    else:
+       st.write(f"{usuario2} no es un match registrado para  {usuario1} :x:")
+
+    if conversacion != False:
+     #input(type(conversacion))
+    # input(conversacion)
+     usuario, texto = conversacion[0][0]
+     #inserter=MongoDBInserter()   
+     #genderuser1=inserter.busca_sexo(usuario)
+     for mensaje in conversacion[0]:
+        # Asegurarnos de que 'mensaje' sea una tupla o lista
+        if isinstance(mensaje, tuple) and len(mensaje) == 2:
+            usuario, texto = mensaje
+            #genderuser1=inserter.busca_sexo(usuario)
+
+            avatar = f"avatars/{usuario}.jpg"  # Avatar para masculino
+        
+
+            with st.chat_message("user",avatar=avatar):
+                st.write(f"{usuario}: \n\n{texto.strip()}")
+            time.sleep(0.5)
+
+            
+        else:
+            print(f"Formato inesperado en mensaje: {mensaje}")  # Imprime para depuración
+
+     inserter.close_connection()       
+    
+
+    
+    
+    
 
 # Función principal
 def app():
@@ -178,8 +292,8 @@ def app():
     # Menú lateral con opciones (usando streamlit-option-menu)
      menu = option_menu(
      menu_title='Menu',  # Título del menú
-     options=['Agregar usuario', 'Usuarios', 'Pairing'],  # Opciones del menú
-     icons=['person-plus', 'people', 'heart'],  # Iconos de las opciones
+     options=['Agregar usuario', 'Usuarios', 'Pairing','Chats'],  # Opciones del menú
+     icons=['person-plus', 'people', 'heart','chat'],  # Iconos de las opciones
      menu_icon="list",  # Ícono del menú lateral
      default_index=0,  # Índice por defecto
      styles={  # Estilos personalizados
@@ -202,7 +316,9 @@ def app():
         mostrar_usuarios()
     elif menu == "Pairing":
         proceso_pairing()
-
+    elif menu == "Chats":
+        proceso_chat()
+ 
 
 # Ejecutar la aplicación
 if __name__ == "__main__":

@@ -55,7 +55,7 @@ class jupiter_class:
     #guardando la conversacion y el score en la bd
     inserter= MongoDBInserter()
     inserter.insertar_conversacion_pairing(agent1.id_usuario,agent2.id_usuario,conversation,score)
-     
+    inserter.close_connection()
     return conversation, score
 
  def find_top_matches(self, selected_agent, agents):
@@ -67,14 +67,15 @@ class jupiter_class:
     opposite_gender_agents = [perfil for perfil in agents if perfil.sexo == ("F" if sexo_selected_agent == "M" else "M")]
 
     matches = []
+    inserter= MongoDBInserter()
     for agent in opposite_gender_agents:
         
 
         if agent.id_usuario != selected_agent.id_usuario:  # Evitar autocomparación
 
             #aca se busca la conversacion y score, si es que existe en la bd (simulate_conversation)
-            inserter= MongoDBInserter()
             existconversation=inserter.busca_conversacion_pairing(selected_agent.id_usuario,agent.id_usuario)
+            
             if existconversation != False:
                print("conversacion existente!")
                conversation,score=existconversation
@@ -89,11 +90,16 @@ class jupiter_class:
                   conversation, score = self.simulate_conversation(selected_agent, agent)  
             
             print(agent.id_usuario)
-            
+           
             matches.append((agent.id_usuario, score, conversation))
 
     # Ordenar por puntaje
+
     matches = sorted(matches, key=lambda x: x[1], reverse=True)
+    
+    #guardando los matches en la bd
+    inserter.insertar_matches(selected_agent.id_usuario,matches[0][0],matches[1][0])
+    inserter.close_connection()
 
     return matches
  
