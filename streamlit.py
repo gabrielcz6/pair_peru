@@ -240,7 +240,7 @@ def proceso_chat():
     usuario2=conversacion[3]
     inserter.close_connection()
     
-    if matches!=False and conversacion[4]==False:    
+    if matches!=False and conversacion==False:    
         if matches[0]==usuario2:
             print(f"{usuario2} es la primera opcion match de {usuario1} ")
             st.write(f"{usuario2} es la primera opcion match de {usuario1} :heart_on_fire:")
