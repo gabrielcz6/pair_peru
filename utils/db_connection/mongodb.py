@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from utils.parse_combine_json import parse_json_from_string
 import os,pandas as pd
 
 class MongoDBInserter:
@@ -15,7 +16,38 @@ class MongoDBInserter:
         self.database = self.client[database_name]
         self.collection = self.database[collection_name]
 
-        
+    def busca_conversacion_display_pairing(self, user1, user2):
+        user1 = user1
+        user2 = user2
+        try: 
+          # Primera búsqueda: user1 y user2
+          query1 = {
+              "id_user_agent1": f"{user1}",
+              "id_user_agent2": f"{user2}",
+          }
+          
+          # Segunda búsqueda: user2 y user1 (en caso de que no se encuentre la primera)
+          query2 = {
+              "id_user_agent1": f"{user2}",
+              "id_user_agent2": f"{user1}",
+          }
+                  # Realizas la consulta con un filtro lógico
+          conversation_collection = self.database["conversations"].find_one(query1)
+          
+          if conversation_collection==None:
+              conversation_collection = self.database["conversations"].find_one(query2)
+              if conversation_collection==None:
+                  return False
+              else :
+                  conversation_original = [(item["user"], item["message"]) for item in conversation_collection["conversation_display"]]
+                  return conversation_original
+          else:    
+              conversation_original = [(item["user"], item["message"]) for item in conversation_collection["conversation_display"]]
+              return conversation_original
+        except:
+            return False
+ 
+
 
     def busca_conversacion_pairing(self, user1, user2):
         user1 = user1
@@ -112,6 +144,64 @@ class MongoDBInserter:
            print(f"Documento de conversacion insertado con id: {result.inserted_id}")
            #input("subesubesube")
 
+    def insertar_conversacion_display(self,conversacion_display,user1,user2):
+        conversacion_display=parse_json_from_string(conversacion_display)
+        #input(f"conversacion \n\n{conversacion_display}")
+        conversation_display_bd = [
+        {"user": element["user"], "message": element["message"]} 
+        for element in conversacion_display
+        ]
+
+        user1 = user1
+        user2 = user2
+        conversation_collection = self.database["conversations"]
+        
+        # Primera búsqueda: user1 y user2
+        query1 = {
+            "id_user_agent1": f"{user1}",
+            "id_user_agent2": f"{user2}",
+        }
+        
+        # Segunda búsqueda: user2 y user1 (en caso de que no se encuentre la primera)
+        query2 = {
+            "id_user_agent1": f"{user2}",
+            "id_user_agent2": f"{user1}",
+        }
+
+        # Documento a insertar o actualizar
+        nuevo_documento = {
+        "conversation_display": conversacion_display,  # Agrega más campos si es necesario
+                         }
+        
+        # Intentar encontrar el documento con la primera búsqueda
+        documento = conversation_collection.find_one(query1)
+        
+     
+        if documento != None:
+           
+            #entra con el query 1 a guardar
+            resultado = conversation_collection.update_one(query1, {"$set": nuevo_documento}, upsert=True) 
+            if resultado.upserted_id:
+                print(f"Documento insertado con ID: {resultado.upserted_id}")
+            else:
+                print("Documento actualizado correctamente.")
+            print("conversacion_display guardado")
+        else:    
+            documento = conversation_collection.find_one(query2)
+            if documento!=None:
+                #entra con el query 2 a guardar
+                resultado = conversation_collection.update_one(query2, {"$set": nuevo_documento}, upsert=True)
+                print("conversacion_display guardado")
+                if resultado.upserted_id:
+                  print(f"Documento insertado con ID: {resultado.upserted_id}")
+                else:
+                  print("Documento actualizado correctamente.")
+            else:
+                return False    
+
+
+
+        #input(conversation_display_bd)
 
     def insert_resumen(self, data):
         try:

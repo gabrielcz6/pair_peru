@@ -3,6 +3,8 @@ from utils.db_connection.mongodb import MongoDBInserter
 import pandas as pd
 import openai
 import google.generativeai as genai
+from dotenv import load_dotenv
+import os
 
 
 
@@ -17,6 +19,9 @@ class jupiter_class:
     self.documentos=[]
     self.profiles=[]	
     self.documentos=self.collection.find()
+    load_dotenv()
+    genai.configure(api_key=os.getenv("GENAI_API_KEY"))
+
     
     for i, documento in enumerate(self.documentos, 1):
        self.profiles.append(documento)
@@ -55,6 +60,11 @@ class jupiter_class:
     #guardando la conversacion y el score en la bd
     inserter= MongoDBInserter()
     inserter.insertar_conversacion_pairing(agent1.id_usuario,agent2.id_usuario,conversation,score)
+    #input("conversacion_display")
+    conversacion_display=self.generar_conversacion_display(agent1,agent2)
+    #insertando la conversacion display!
+    inserter.insertar_conversacion_display(conversacion_display,agent1.id_usuario,agent2.id_usuario)
+
     inserter.close_connection()
     return conversation, score
 
@@ -102,7 +112,57 @@ class jupiter_class:
     inserter.close_connection()
 
     return matches
- 
+ def generar_conversacion_display(self,usuario1,usuario2):
+    """
+    Utiliza GPT-4 para generar una buena conversacion para el display.
+    """
+    prompt = f"""
+        Deberas generar un chat de whatsapp con las siguientes reglas:
+
+        *La conversacion debe ser fluida y debe impactar a quien lo lee, debe tener un estilo calido como latino
+        *La conversacion debe centrarse en sus cosas en comun, tratando de abarcar lo mayor posible en coincidencias
+        *la conversacion debera tener de salida un json con la siguiente estructura:
+
+         [
+         ["user": "user":"{usuario1.id_usuario}","message": "mensaje del chat"],
+         ["user": "user":{usuario2.id_usuario},"message": "mensaje del chat"],
+         ]
+        *La conversacion debe ser de 30 idas y vueltas
+        *Los perfiles son los siguientes
+         
+        Tu perfil:
+        - Nombre de usuario: {usuario1.id_usuario}
+        - Trabajos: {', '.join(usuario1.trabajo)}
+        - Estudio: {usuario1.estudio}
+        - Lugares favoritos: {', '.join(usuario1.lugares)}
+        - Comidas favoritas: {', '.join(usuario1.comidas)}
+        - Hobbies: {', '.join(usuario1.hobbies)}
+
+        El perfil de la persona con la que interactúas:
+        - Nombre de usuario: {usuario2.id_usuario}
+        - Trabajos: {', '.join(usuario2.trabajo)}
+        - Estudio: {usuario2.estudio.get('carrera', 'No especificado')} con especialidad en {usuario2.estudio.get('especialidad', 'No especificado')}
+        - Lugares favoritos: {', '.join(usuario2.lugares)}
+        - Comidas favoritas: {', '.join(usuario2.comidas)}
+        - Hobbies: {', '.join(usuario2.hobbies)}
+
+        
+
+    """
+    # Llamada al modelo GPT-4
+    response = openai.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=[
+            {"role": "system", "content": "Eres un experto en crear chats de whatsapp para una serie de tv, de gente que busca pareja en estados unidos, habla de manera divertida y jovial"},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+
+    # Devolver el texto generado por el modelo
+    response_message = response.choices[0].message.content
+    return response_message
+
  def summarize_profile_with_llm(self,usuario):
 
     

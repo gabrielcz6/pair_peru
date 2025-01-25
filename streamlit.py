@@ -5,7 +5,7 @@ import pandas as pd
 from utils.db_connection.mongodb import MongoDBInserter
 from utils.jupiter import jupiter_class, GPTAgent
 from streamlit_option_menu import option_menu
-import os
+import os,re
 
 
 def getusersdict():
@@ -235,9 +235,11 @@ def proceso_chat():
     
     inserter=MongoDBInserter() 
     matches = inserter.busca_matches(usuario1)
+
+    #busca conversacion larga pairing
     conversacion=inserter.busca_conversacion_pairing(usuario1,usuario2)  
-    inserter.close_connection()
-    
+     
+    #representa los display segun el caso si es match o no 
     if matches!=False:    
         if matches[0]==usuario2:
             print(f"{usuario2} es la primera opcion match de {usuario1} ")
@@ -251,9 +253,18 @@ def proceso_chat():
     else:
        st.write(f"{usuario2} no es un match registrado para  {usuario1} :x:")
 
-    if conversacion != False:
+    
+    if conversacion!=False:
+     #busca conversacion para display ( tipo chat )
+     conversacion_display=inserter.busca_conversacion_display_pairing(usuario1,usuario2)
+     if conversacion_display!= False:
+          #input(conversacion_display)
+          lista_tuplas = [(item[0], item[1]) for item in conversacion_display]
+          conversacion=(lista_tuplas,1)
+          
      #input(type(conversacion))
-    # input(conversacion)
+     inserter.close_connection()
+     #input(conversacion)
      usuario, texto = conversacion[0][0]
      #inserter=MongoDBInserter()   
      #genderuser1=inserter.busca_sexo(usuario)
