@@ -9,6 +9,7 @@ import os
 from datetime import datetime
 from urllib.parse import unquote
 import wget
+from dotenv import load_dotenv
 from random import randint
 
 
@@ -18,7 +19,7 @@ def crearchromedriver():
    chrome_options = ChromeOptions()
    chrome_options.add_argument("--start-maximized")  # Maximiza la ventana del navegador
    chrome_options.add_argument("--force-device-scale-factor=0.5")
-   chrome_options.add_argument('--headless')  # Activa el modo headless o invisible
+   #chrome_options.add_argument('--headless')  # Activa el modo headless o invisible
    #chrome_options.add_argument('--disable-gpu')  # Desactiva la GPU para ahorrar recursos
    driver = webdriver.Chrome(service=Service('chromedriver.exe'), options=chrome_options)
    driver.set_window_position(0, 0)
@@ -35,7 +36,7 @@ def extraercomentariosyhashtageimagen(driver,iguserid,folder_name):
 
     with open(f"{folder_name}/{iguserid}_{date}_instagram_posts.txt", "a", encoding="utf-8") as file:
         # Buscar el contenedor con el XPath dado
-        contenedor = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[2]/div[1]/article/div/div[2]")
+        contenedor = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[2]/div[1]/article/div/div[2]")
         
         # Buscar todos los `div` con `role="button"` dentro del contenedor
         botones = contenedor.find_elements(By.XPATH, './/div[@role="button"]')
@@ -70,7 +71,7 @@ def extraercomentariosyhashtageimagen(driver,iguserid,folder_name):
 
     try:
        # Encontrar el contenedor específico utilizando el XPath proporcionado
-       container_element = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[2]/div[1]/article/div/div[1]")
+       container_element = driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/section/main/div[2]/div[1]/article/div/div[1]")
    
        # Buscar todas las imágenes dentro de este contenedor
        img_elements = container_element.find_elements(By.TAG_NAME, 'img')
@@ -133,17 +134,25 @@ def extraercomentariosyhashtageimagen(driver,iguserid,folder_name):
        print(f"Error: {e}")
 
 def Scrape_1(iguserid,date,driver):
+   load_dotenv()
+
+   # Obtener credenciales
+   username = os.getenv("USERNAME_IG")
+   password = os.getenv("PASSWORD_IG")
+
    print("scrape 1")
    driver.get("https://www.instagram.com/")
    time.sleep(2)
    
    #login
    try:           
-    WebDriverWait(driver, 0.5).until(EC.presence_of_element_located((By.NAME, "username"))).send_keys("pair.peru")
-    WebDriverWait(driver, 0.5).until(EC.presence_of_element_located((By.NAME, "password"))).send_keys("Pairperu2025..")
+    WebDriverWait(driver, 0.5).until(EC.presence_of_element_located((By.NAME, "username"))).send_keys(username)
+    WebDriverWait(driver, 0.5).until(EC.presence_of_element_located((By.NAME, "password"))).send_keys(password)
     WebDriverWait(driver, 0.5).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div/section/main/article/div[2]/div[1]/div[2]/div/form//button[@type="submit"]'))).click()  
+
    except Exception as e:
     print("Error en el login: ", e)
+    
    time.sleep(7)
 
    #busca datos
@@ -154,12 +163,14 @@ def Scrape_1(iguserid,date,driver):
     print("Error al intentar el scrapping", e)
 
    #cuantos post
-   try:                                                                                  
-      cantpost=      WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[1]/div/span/span'))).text  
-      cantseguidores=WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[2]/div/a/span/span'))).text  
-      cantseguidos=  WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[3]/div/a/span/span'))).text  
-      nombre=        WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[4]/div/div[1]/span'))).text  
-      descripcion=   WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[4]/div/span/div/span'))).text
+   try: 
+      #input("cantpost?")                                                                                    
+                                                                                             #  /html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[1]/div/span/span                                                                          
+      cantpost=      WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[1]/div/span/span'))).text  
+      cantseguidores=WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[2]/div/a/span/span'))).text  
+      cantseguidos=  WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[3]/div/a/span/span'))).text  
+      nombre=        WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[4]/div/div[1]/span'))).text  
+      descripcion=   WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[4]/div/span/div/span'))).text
    except Exception as e:
     descripcion=""
     print("Error: ", e)
@@ -175,8 +186,8 @@ def Scrape_1(iguserid,date,driver):
 
          driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
          time.sleep(1)
-
-         links = driver.find_elements(By.XPATH, "/html/body/div[2]/div/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/div[2]/div//a")
+    
+         links = driver.find_elements(By.XPATH, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/div[2]/div//a")
          
          #Guardar los enlaces en un archivo txt
          try:
