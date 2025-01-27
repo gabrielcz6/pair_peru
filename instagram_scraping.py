@@ -19,7 +19,7 @@ def crearchromedriver():
    chrome_options = ChromeOptions()
    chrome_options.add_argument("--start-maximized")  # Maximiza la ventana del navegador
    chrome_options.add_argument("--force-device-scale-factor=0.5")
-   #chrome_options.add_argument('--headless')  # Activa el modo headless o invisible
+   chrome_options.add_argument('--headless')  # Activa el modo headless o invisible
    #chrome_options.add_argument('--disable-gpu')  # Desactiva la GPU para ahorrar recursos
    driver = webdriver.Chrome(service=Service('chromedriver.exe'), options=chrome_options)
    driver.set_window_position(0, 0)
