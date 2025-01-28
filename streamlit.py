@@ -91,13 +91,61 @@ def generar_resumen(usuario_id):
         st.write(resumen)
         inserter.close_connection()
 
+def editar_preferencias():
+    # Botón para cargar los usuarios
+    if st.button("Ver todos los usuarios"):
+        # Guardar en session_state
+        st.session_state.df_usuarios = cargar_usuarios_a_dataframe()
 
+    # Mostrar la tabla si está en session_state
+    if "df_usuarios" in st.session_state:
+        st.write(st.session_state.df_usuarios)
+        st.session_state.usuario_seleccionado = None
+        # Mostrar el selectbox para seleccionar un usuario
+        usuario_seleccionado = st.selectbox(
+            "Selecciona tu usuario",
+            st.session_state.df_usuarios["id_usuario"].tolist(),
+                index=0 if st.session_state.usuario_seleccionado is None else st.session_state.df_usuarios["id_usuario"].tolist().index(st.session_state.usuario_seleccionado)
+        )
+        
+        # Si el usuario seleccionado cambia, se actualiza session_state y se reflejará en el selectbox
+        if usuario_seleccionado != st.session_state.usuario_seleccionado:
+            st.session_state.usuario_seleccionado = usuario_seleccionado
 
+    # Pregunta 1: Describe la personalidad ideal de tu pareja
+    st.subheader("Describe la personalidad de tu pareja ideal con algunos adjetivos:")
+    personalidad = st.text_input("Ejemplo: amable, divertida, aventurera")
+    
+    # Pregunta 2: Intereses, pasiones y pasatiempos
+    st.subheader("Fuera del trabajo, ¿cuáles son algunos intereses, pasiones y pasatiempos que te parecen atractivos en una relación?")
+    intereses = st.text_input("Ejemplo: deportes, lectura, viajes, cocina, arte")
+    
+    # Pregunta 3: Importancia de la educación
+    st.subheader("¿Cuán importante es la educación de tu pareja ideal?")
+    educacion_importancia = st.select_slider(
+        "Selecciona un nivel de importancia:",
+        options=["Nada importante", "Poco importante", "Moderadamente importante", "Muy importante", "Esencial"]
+    )
+    
+    # Pregunta 4: Tipo de educación ideal
+    st.subheader("¿Qué tipo de educación te gustaría que tenga tu pareja ideal?")
+    tipo_educacion = st.text_input("Ejemplo: universitaria, técnica, autodidacta")
+    
+    # Botón para enviar
+    if st.button("Enviar"):
+        st.success("¡Tus preferencias han sido guardadas con éxito!")
+        st.write("### Resumen de tus respuestas:")
+        st.write(f"- **Personalidad ideal**: {personalidad}")
+        st.write(f"- **Intereses y pasatiempos atractivos**: {intereses}")
+        st.write(f"- **Importancia de la educación**: {educacion_importancia}")
+        st.write(f"- **Tipo de educación deseada**: {tipo_educacion}")
+    
+    
 #DEL MENU PRINCIPAL
 
 # Función para agregar un nuevo usuario
 def agregar_usuario():
-    st.header("Agregar nuevo usuario")
+    st.header("Agregar Redes Sociales")
     
     #Formulario para datos de scrapping
     nombre_usuario = st.text_input("Nombre")
@@ -119,7 +167,7 @@ def agregar_usuario():
             except Exception as e:
                 # Si ocurre un error, mostrar un mensaje de error
                 st.error(f"Error al agregar al usuario {nombre_usuario}. Detalles: {e}")
-
+    
 # Función principal
 def mostrar_usuarios():
     st.header("Panel de Usuarios")
@@ -316,8 +364,8 @@ def app():
     # Menú lateral con opciones (usando streamlit-option-menu)
      menu = option_menu(
      menu_title='Menu',  # Título del menú
-     options=['Agregar usuario', 'Usuarios', 'Pairing','Chats'],  # Opciones del menú
-     icons=['person-plus', 'people', 'heart','chat'],  # Iconos de las opciones
+     options=['Redes Sociales','Preferencias' ,'Usuarios', 'Pairing','Chats'],  # Opciones del menú
+     icons=['person-plus', 'people','people', 'heart','chat'],  # Iconos de las opciones
      menu_icon="list",  # Ícono del menú lateral
      default_index=0,  # Índice por defecto
      styles={  # Estilos personalizados
@@ -334,7 +382,7 @@ def app():
     }
 )
     # Lógica según la opción seleccionada
-    if menu == "Agregar usuario":
+    if menu == "Redes Sociales":
         agregar_usuario()
     elif menu == "Usuarios":
         mostrar_usuarios()
@@ -342,6 +390,8 @@ def app():
         proceso_pairing()
     elif menu == "Chats":
         proceso_chat()
+    elif menu == "Preferencias":
+        editar_preferencias()    
  
 
 # Ejecutar la aplicación
