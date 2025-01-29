@@ -289,8 +289,8 @@ def proceso_pairing():
                 
                 # Segunda sección para el segundo usuario
                 st.subheader(f"Usuario: ¨{matched_agent2.id_usuario}¨")
-                resumen_user_3 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", "Compatibilidad", key="user_1",height=400)
-                resumen_user_4 = st.text_area(f"Compatibilidad de interaccion {matched_agent1.id_usuario}", "Compatibilidad", key="user_1",height=400)
+                resumen_user_5 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", "Compatibilidad", key="user_1",height=400)
+                resumen_user_6 = st.text_area(f"Compatibilidad de interaccion {matched_agent1.id_usuario}", "Compatibilidad", key="user_1",height=400)
                 
              #generar_resumen(st.session_state.usuario_seleccionado)
     
