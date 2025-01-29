@@ -273,24 +273,24 @@ def proceso_pairing():
                 st.header("Potenciales Matches")
                 # Primera sección para el primer usuario
                 st.subheader(f"Usuario: ¨{matched_agent1.id_usuario}¨")
-                resumen_user_1 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", "Compatibilidad", key="user_1",height=400)
-                resumen_user_2 = st.text_area(f"Compatibilidad de interaccion {matched_agent1.id_usuario}", "Compatibilidad", key="user_2",height=400)
+                resumen_user_1 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", "Compatibilidad de preferencias ", key="user_1",height=400)
+                resumen_user_2 = st.text_area(f"Compatibilidad de interaccion {matched_agent1.id_usuario}", match_summary1, key="user_2",height=400)
                 
                 # Espaciado entre las secciones
                 st.write("---")
                 
                 # Segunda sección para el segundo usuario
                 st.subheader(f"Usuario: ¨{matched_agent2.id_usuario}¨")
-                resumen_user_3 = st.text_area(f"Compatibilidad de perfiles {matched_agent2.id_usuario}", "Compatibilidad", key="user_3",height=400)
-                resumen_user_4 = st.text_area(f"Compatibilidad de interaccion {matched_agent2.id_usuario}", "Compatibilidad", key="user_4",height=400)
+                resumen_user_3 = st.text_area(f"Compatibilidad de perfiles {matched_agent2.id_usuario}", "Compatibilidad de preferencias", key="user_3",height=400)
+                resumen_user_4 = st.text_area(f"Compatibilidad de interaccion {matched_agent2.id_usuario}", match_summary2, key="user_4",height=400)
 
                  # Espaciado entre las secciones
                 st.write("---")
                 
                 # Segunda sección para el segundo usuario
                 st.subheader(f"Usuario: ¨{matched_agent2.id_usuario}¨")
-                resumen_user_5 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", "Compatibilidad", key="user_5",height=400)
-                resumen_user_6 = st.text_area(f"Compatibilidad de interaccion {matched_agent1.id_usuario}", "Compatibilidad", key="user_6",height=400)
+                resumen_user_5 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", "Compatibilidad conversacion", key="user_5",height=400)
+                resumen_user_6 = st.text_area(f"Compatibilidad de interaccion {matched_agent1.id_usuario}", "Compatibilidad de preferencias", key="user_6",height=400)
                 
              #generar_resumen(st.session_state.usuario_seleccionado)
     
