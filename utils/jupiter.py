@@ -33,11 +33,13 @@ class jupiter_class:
     """
     conversation = []
     score = 0
+    
+    
 
     # Agente 1 inicia la conversación
     message = agent1.generate_message(agent2)
     conversation.append((agent1.id_usuario, message))
-
+   
     for _ in range(turns):
         # Agente 2 responde
         response = agent2.respond_to_message(message)
@@ -62,13 +64,36 @@ class jupiter_class:
     inserter.insertar_conversacion_pairing(agent1.id_usuario,agent2.id_usuario,conversation,score)
     #input("conversacion_display")
     conversacion_display=self.generar_conversacion_display(agent1,agent2)
+    
     #insertando la conversacion display!
     inserter.insertar_conversacion_display(conversacion_display,agent1.id_usuario,agent2.id_usuario)
-
     inserter.close_connection()
+    
     return conversation, score
+ 
+ def find_top_matches_preferencia_pareja(self,selected_agent,agents):
+    """
+    Encuentra los top N matches para un agente seleccionado basados en sus preferencias.
+    """
+    ## Considerar solo agentes de sexo distinto
+    sexo_selected_agent = selected_agent.sexo
+    opposite_gender_agents = [perfil for perfil in agents if perfil.sexo == ("F" if sexo_selected_agent == "M" else "M")]
+    matches = []
+    inserter= MongoDBInserter()
+    
+    for agent in opposite_gender_agents:
+       #si no encuentra a con b ni b con a crea nueva converesacion
+       #vamos a comparar los agentes para tener una puntuacion objetiva calificado semanticamente:
+       comparation=selected_agent.generate_comparation(agent)
+       input(f"comparation: \n\n {comparation}")
 
- def find_top_matches(self, selected_agent, agents):
+       score= 1 #comparation_score
+       matches.append((agent.id_usuario, score, comparation))
+       
+       
+
+
+ def find_top_matches_conversation(self, selected_agent, agents):
     """
     Encuentra los top N matches para un agente seleccionado basados en conversaciones simuladas.
     """
@@ -78,9 +103,9 @@ class jupiter_class:
 
     matches = []
     inserter= MongoDBInserter()
+
     for agent in opposite_gender_agents:
         
-
         if agent.id_usuario != selected_agent.id_usuario:  # Evitar autocomparación
 
             #aca se busca la conversacion y score, si es que existe en la bd (simulate_conversation)
@@ -252,9 +277,66 @@ class GPTAgent:
         self.hobbies = profile["hobbies"]
         self.sexo = profile["genero"]
         self.id_usuario = profile["id_usuario"]
+        self.preferencias_pareja= profile["preferencias_pareja"]
 
         self.model1 = genai.GenerativeModel("gemini-1.5-pro")
+
+    def generate_comparation(self,other_agent):
+       """
+        Genera una comparacion semantica basado en mis preferencias como agente y las características del otro agente .
+        """
+       prompt = f"""
+           REGLAS:
+        * Deberas comparar Mi perfil con el perfil de la persona con la que interactuo y encontrar cosas en comun
+        * deberas tomar en cuenta  Mis Preferencias de pareja ideal para generar la respuesta tambien
+        * Todo este analisis debe ser cualitativo
+        * La salida siempre debera ser un json con n elementos del siguiente formato:
+
+       [
+        {{
+            "preferencia_encontrada": "Descripción de la compatibilidad por una preferencia",
+            "sustento": "Explicación del porqué esa compatibilidad es relevante según los perfiles"
+        }},
+        ...
+       ]
+
+        Mi perfil:
+        - Nombre de usuario: {self.id_usuario}
+        - Usuario de Instagram: {self.ig_user}
+        - Trabajos: {', '.join(self.trabajo)}
+        - Estudio: {self.estudio.get('carrera', 'No especificado')} con especialidad en {self.estudio.get('especialidad', 'No especificado')}
+        - Lugares favoritos: {', '.join(self.lugares)}
+        - Comidas favoritas: {', '.join(self.comidas)}
+        - Hobbies: {', '.join(self.hobbies)}
         
+        Mis Preferencias de pareja ideal:
+
+        - Personalidad: {self.preferencias_pareja.get('personalidad', 'No especificado')}\n"
+        - Intereses: {self.preferencias_pareja.get('intereses', 'No especificado')}\n"
+        - Importancia de la educación: {self.preferencias_pareja.get('importancia_educacion', 'No especificado')}\n"
+        - Tipo de educación: {self.preferencias_pareja.get('tipo_educacion', 'No especificado')}\n"
+
+        El perfil de la persona con la que interactúo:
+        
+        - Nombre de usuario: {other_agent.id_usuario}
+        - Usuario de Instagram: {other_agent.ig_user}
+        - Trabajos: {', '.join(other_agent.trabajo)}
+        - Estudio: {other_agent.estudio.get('carrera', 'No especificado')} con especialidad en {other_agent.estudio.get('especialidad', 'No especificado')}
+        - Lugares favoritos: {', '.join(other_agent.lugares)}
+        - Comidas favoritas: {', '.join(other_agent.comidas)}
+        - Hobbies: {', '.join(other_agent.hobbies)}
+
+        """
+       
+       response = self.model1.start_chat(
+            history=[
+                {"role": "model", "parts": "Eres un experto en analizar compatibilidades entre 2 personas que buscan parejas ."},
+                {"role": "user", "parts": prompt}
+            ]
+        )
+       response_message = response.send_message(f"dame el json solo basandote en Mis Preferencias de pareja ideal.")
+       return response_message.text
+
     def generate_message(self, other_agent):
         """
         Genera un mensaje inicial basado en las características del otro agente.

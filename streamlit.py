@@ -92,6 +92,7 @@ def generar_resumen(usuario_id):
         inserter.close_connection()
 
 def editar_preferencias():
+    inserter=MongoDBInserter() 
     # Botón para cargar los usuarios
     if st.button("Ver todos los usuarios"):
         # Guardar en session_state
@@ -134,12 +135,21 @@ def editar_preferencias():
     # Botón para enviar
     if st.button("Enviar"):
         st.success("¡Tus preferencias han sido guardadas con éxito!")
+
+        preferencias_pareja = {
+        "personalidad": personalidad,
+        "intereses": intereses,
+        "importancia_educacion": educacion_importancia,
+        "tipo_educacion": tipo_educacion
+    }
+        inserter.insert_intereses(st.session_state.usuario_seleccionado,preferencias_pareja)
+        inserter.close_connection()
         st.write("### Resumen de tus respuestas:")
         st.write(f"- **Personalidad ideal**: {personalidad}")
         st.write(f"- **Intereses y pasatiempos atractivos**: {intereses}")
         st.write(f"- **Importancia de la educación**: {educacion_importancia}")
         st.write(f"- **Tipo de educación deseada**: {tipo_educacion}")
-    
+   
     
 #DEL MENU PRINCIPAL
 
@@ -230,9 +240,15 @@ def proceso_pairing():
                      break
                 print(selected_agent.id_usuario) 
 
-                # Encontrar los mejores matches
+                # Encontrar los mejores matches y regresarlos con su puntaje, tambien usa conversaciones guardadas
                 jupiter_instance2 = jupiter_class()
-                top_matches = jupiter_instance2.find_top_matches(selected_agent, agents)
+                top_matches = jupiter_instance2.find_top_matches_conversation(selected_agent, agents)
+                
+                #encontrar los matches por compatibilidad
+                top_matches_preferencia_pareja=jupiter_instance2.find_top_matches_preferencia_pareja(selected_agent,agents)
+                #print("json compatibilidad :\n\n")
+               # input(top_matches_preferencia_pareja)
+                
                 ## Crear una tabla con os resultados del score
                 df_matches = pd.DataFrame(columns=['perfil','score'])
                 i = 0
@@ -257,14 +273,24 @@ def proceso_pairing():
                 st.header("Potenciales Matches")
                 # Primera sección para el primer usuario
                 st.subheader(f"Usuario: ¨{matched_agent1.id_usuario}¨")
-                resumen_user_1 = st.text_area(f"Resumen de Justificación para {matched_agent1.id_usuario}", match_summary1, key="user_1",height=400)
+                resumen_user_1 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", "Compatibilidad", key="user_1",height=400)
+                resumen_user_2 = st.text_area(f"Compatibilidad de interaccion {matched_agent1.id_usuario}", "Compatibilidad", key="user_1",height=400)
                 
                 # Espaciado entre las secciones
                 st.write("---")
                 
                 # Segunda sección para el segundo usuario
                 st.subheader(f"Usuario: ¨{matched_agent2.id_usuario}¨")
-                resumen_user_2 = st.text_area(f"Resumen de Justificación para {matched_agent2.id_usuario}", match_summary2, key="user_2",height=400)
+                resumen_user_3 = st.text_area(f"Compatibilidad de perfiles {matched_agent2.id_usuario}", "Compatibilidad", key="user_1",height=400)
+                resumen_user_4 = st.text_area(f"Compatibilidad de interaccion {matched_agent2.id_usuario}", "Compatibilidad", key="user_1",height=400)
+
+                 # Espaciado entre las secciones
+                st.write("---")
+                
+                # Segunda sección para el segundo usuario
+                st.subheader(f"Usuario: ¨{matched_agent2.id_usuario}¨")
+                resumen_user_3 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", "Compatibilidad", key="user_1",height=400)
+                resumen_user_4 = st.text_area(f"Compatibilidad de interaccion {matched_agent1.id_usuario}", "Compatibilidad", key="user_1",height=400)
                 
              #generar_resumen(st.session_state.usuario_seleccionado)
     

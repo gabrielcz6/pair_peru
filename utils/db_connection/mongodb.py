@@ -213,7 +213,32 @@ class MongoDBInserter:
             raise Exception(f"The following error occurred: {e}")
         
 
-    
+    def insert_intereses(self,user,preferencias_pareja):
+        #ejemplo:
+        '''
+        # Datos a insertar
+        preferencias_pareja = {
+        "personalidad": "amable, divertida, aventurera",
+        "intereses": "deportes, lectura, viajes, cocina, arte",
+        "importancia_educacion": "Muy importante",
+        "tipo_educacion": "universitaria"
+         }
+        '''
+        try:
+            # Seleccionar la base de datos y la colección
+            filtro = {"id_usuario": user}
+            # Actualizar el documento, añadiendo el campo preferencias_pareja
+            resultado = self.collection.update_one(
+                filtro, 
+                {"$set": {"preferencias_pareja": preferencias_pareja}}
+            )
+
+            if resultado.matched_count > 0:
+              print("El documento preferencias se actualizó correctamente.")
+              #print(f"Documentos modificados: {resultado.modified_count}")
+        except Exception as e:
+            raise Exception(f"Error insertando preferencias: {e}")  
+
 
     def get_resumen_by_id(self, id_usuario):
         try:
