@@ -245,7 +245,7 @@ def proceso_pairing():
                 top_matches = jupiter_instance2.find_top_matches_conversation(selected_agent, agents)
                 
                 #encontrar los matches por compatibilidad
-                top_matches_preferencia_pareja=jupiter_instance2.find_top_matches_preferencia_pareja(selected_agent,agents)
+                #top_matches_preferencia_pareja=jupiter_instance2.find_top_matches_preferencia_pareja(selected_agent,agents)
                 #print("json compatibilidad :\n\n")
                # input(top_matches_preferencia_pareja)
                 
