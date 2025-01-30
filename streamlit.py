@@ -7,6 +7,14 @@ from utils.jupiter import jupiter_class, GPTAgent
 from streamlit_option_menu import option_menu
 import os,re
 
+def formatear_preferencias(preferencias):
+    preferencias_str = "Preferencias Encontradas:\n\n"
+    
+    for i, pref in enumerate(preferencias, 1):
+        preferencias_str += f"{i}. {pref['preferencia_encontrada']}\n"
+        preferencias_str += f"   - {pref['sustento']}\n\n"
+
+    return preferencias_str
 
 def getusersdict():
     inserter=MongoDBInserter()
@@ -250,16 +258,7 @@ def proceso_pairing():
 
                 top_matches_final=jupiter_instance2.find_top_matches_final(selected_agent.id_usuario,top_matches_preferencia_pareja,top_matches_conversacion)
                 
-                #input(top_matches_final)
 
-                #print("json compatibilidad :\n\n")
-                #input(top_matches_preferencia_pareja)
-                
-                ## Crear una tabla con os resultados del score
-                
-                
-                ## Crear un resumen del match
-                # Obtener el mejor match
                 
                 matched_agent_id1, match_score, preferencias1,conversation1 = top_matches_final.iloc[0] #top1
                 matched_agent_id2, match_score, preferencias2,conversation2 = top_matches_final.iloc[1] #top2
@@ -275,10 +274,13 @@ def proceso_pairing():
                 match_summary2 = jupiter_instance2.summarize_match_with_llm(selected_agent, matched_agent2, conversation2)
                 match_summary3 = jupiter_instance2.summarize_match_with_llm(selected_agent, matched_agent3, conversation3)
 
-          
+                preferencias1=formatear_preferencias(preferencias1)
+                preferencias2=formatear_preferencias(preferencias2)
+                preferencias3=formatear_preferencias(preferencias3) 
+                          
                 st.header("Potenciales Matches")
                 # Primera sección para el primer usuario
-                st.subheader(f"Usuario: ¨{matched_agent1.id_usuario}¨")
+                st.subheader(f"Primer usuario compatible: ¨{matched_agent1.id_usuario}¨")
                 resumen_user_1 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", preferencias1, key="user_1",height=400)
                 resumen_user_2 = st.text_area(f"Compatibilidad de interaccion {matched_agent1.id_usuario}", match_summary1, key="user_2",height=400)
                 
@@ -286,7 +288,7 @@ def proceso_pairing():
                 st.write("---")
                 
                 # Segunda sección para el segundo usuario
-                st.subheader(f"Usuario: ¨{matched_agent2.id_usuario}¨")
+                st.subheader(f"Segundo usuario compatible: ¨{matched_agent2.id_usuario}¨")
                 resumen_user_3 = st.text_area(f"Compatibilidad de perfiles {matched_agent2.id_usuario}", preferencias2, key="user_3",height=400)
                 resumen_user_4 = st.text_area(f"Compatibilidad de interaccion {matched_agent2.id_usuario}", match_summary2, key="user_4",height=400)
 
@@ -294,7 +296,7 @@ def proceso_pairing():
                 st.write("---")
                 
                 # Tercera sección para el tercer usuario
-                st.subheader(f"Usuario: ¨{matched_agent3.id_usuario}¨")
+                st.subheader(f"Tercer usuario compatible: ¨{matched_agent3.id_usuario}¨")
                 resumen_user_5 = st.text_area(f"Compatibilidad de perfiles {matched_agent3.id_usuario}", preferencias3, key="user_5",height=400)
                 resumen_user_6 = st.text_area(f"Compatibilidad de interaccion {matched_agent3.id_usuario}", match_summary3, key="user_6",height=400)
                 
