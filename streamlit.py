@@ -9,12 +9,14 @@ import os,re
 
 def formatear_preferencias(preferencias):
     preferencias_str = "Preferencias Encontradas:\n\n"
-    
-    for i, pref in enumerate(preferencias, 1):
-        preferencias_str += f"{i}. {pref['preferencia_encontrada']}\n"
-        preferencias_str += f"   - {pref['sustento']}\n\n"
+    try:
+     for i, pref in enumerate(preferencias, 1):
+         preferencias_str += f"{i}. {pref['preferencia_encontrada']}\n"
+         preferencias_str += f"   - {pref['sustento']}\n\n"
 
-    return preferencias_str
+     return preferencias_str
+    except:
+        return preferencias
 
 def getusersdict():
     inserter=MongoDBInserter()
@@ -273,7 +275,7 @@ def proceso_pairing():
                 match_summary1 = jupiter_instance2.summarize_match_with_llm(selected_agent, matched_agent1, conversation1)
                 match_summary2 = jupiter_instance2.summarize_match_with_llm(selected_agent, matched_agent2, conversation2)
                 match_summary3 = jupiter_instance2.summarize_match_with_llm(selected_agent, matched_agent3, conversation3)
-
+                
                 preferencias1=formatear_preferencias(preferencias1)
                 preferencias2=formatear_preferencias(preferencias2)
                 preferencias3=formatear_preferencias(preferencias3) 
