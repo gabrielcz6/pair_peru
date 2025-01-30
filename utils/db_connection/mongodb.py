@@ -47,7 +47,27 @@ class MongoDBInserter:
         except:
             return False
  
+    def busca_preferencias_pairing(self, user1, user2):
+        user1 = user1
+        user2 = user2
+        preferencias_collection = self.database["preferencias"]
+        
+        # Primera búsqueda: user1 y user2
+        query1 = {
+            "id_user_agent1": f"{user1}",
+            "id_user_agent2": f"{user2}",
+        }
 
+        
+        # Intentar encontrar el documento con la primera búsqueda
+        documento = preferencias_collection.find_one(query1)
+
+        # Comprobar si se encontró el documento y obtener el 'score'
+        if documento is None:
+            return False
+        else:
+            
+            return documento["preferencias"], int(documento["score"])
 
     def busca_conversacion_pairing(self, user1, user2):
         user1 = user1
@@ -106,8 +126,8 @@ class MongoDBInserter:
         else:
             return documento["genero"] 
             
-    def insertar_matches(self, user_id, match1, match2):
-      
+    def insertar_matches(self, user_id, match1, match2, match3):
+       
        # Seleccionando la base de datos y la colección
        profiles_collection = self.database["profiles"]      
        # Definiendo el filtro para encontrar el documento específico
@@ -116,7 +136,8 @@ class MongoDBInserter:
        nuevos_campos = {
            "$set": {
                "match1": match1,
-               "match2": match2
+               "match2": match2,
+               "match3": match3,
            }
        }
        
@@ -128,7 +149,21 @@ class MongoDBInserter:
            print(f"Documento con ID {user_id} actualizado exitosamente.")
        else:
            print(f"No se encontró un documento con el ID {user_id}.")
-   
+    
+    def insertar_preferencias_pairing(self, user1,user2,preferencias,score):
+           #guardando la conversacion y el score en la bd
+           documento = {
+           "id_user_agent1": f"{user1}",
+           "id_user_agent2": f"{user2}",
+            "preferencias": preferencias,
+            "score": score
+           }
+           # Cambiar a la colección 'summary_profiles'
+           conversation_collection = self.database["preferencias"]
+           result = conversation_collection.insert_one(documento)
+           print(f"Documento de conversacion insertado con id: {result.inserted_id}")
+           #input("subesubesube")
+
     def insertar_conversacion_pairing(self, user1,user2,conversation,score):
            #guardando la conversacion y el score en la bd
            conversation_bd = [{"user": user, "message": message} for user, message in conversation]
@@ -136,7 +171,7 @@ class MongoDBInserter:
            "id_user_agent1": f"{user1}",
            "id_user_agent2": f"{user2}",
             "conversation": conversation_bd,
-            "score":f"{score}"
+            "score": score
            }
            # Cambiar a la colección 'summary_profiles'
            conversation_collection = self.database["conversations"]

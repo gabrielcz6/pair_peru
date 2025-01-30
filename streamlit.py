@@ -34,7 +34,7 @@ def cargar_usuarios_a_dataframe():
         
         # Filtrar columnas relevantes y guardar en session_state
         st.session_state.df_usuarios = df_usuarios[[
-            "id_usuario", "ig_user", "linkedin_user", "genero", "trabajo", "estudio", "hobbies", "lugares", "comidas"
+            "id_usuario", "genero", "trabajo", "estudio", "hobbies", "lugares", "comidas","preferencias_pareja"
         ]]
 
     finally:
@@ -239,41 +239,47 @@ def proceso_pairing():
                      
                      break
                 print(selected_agent.id_usuario) 
-
+                
                 # Encontrar los mejores matches y regresarlos con su puntaje, tambien usa conversaciones guardadas
                 jupiter_instance2 = jupiter_class()
-                top_matches = jupiter_instance2.find_top_matches_conversation(selected_agent, agents)
-                
+
+             
+                top_matches_conversacion = jupiter_instance2.find_top_matches_conversation(selected_agent, agents)
                 #encontrar los matches por compatibilidad
-                #top_matches_preferencia_pareja=jupiter_instance2.find_top_matches_preferencia_pareja(selected_agent,agents)
+                top_matches_preferencia_pareja=jupiter_instance2.find_top_matches_preferencia_pareja(selected_agent,agents)
+
+                top_matches_final=jupiter_instance2.find_top_matches_final(selected_agent.id_usuario,top_matches_preferencia_pareja,top_matches_conversacion)
+                
+                #input(top_matches_final)
+
                 #print("json compatibilidad :\n\n")
-               # input(top_matches_preferencia_pareja)
+                #input(top_matches_preferencia_pareja)
                 
                 ## Crear una tabla con os resultados del score
-                df_matches = pd.DataFrame(columns=['perfil','score'])
-                i = 0
-                for match in top_matches:
-                    df_matches.loc[i] = (match[0],match[1])
-                    i = i + 1
-                print(df_matches)
+                
+                
                 ## Crear un resumen del match
                 # Obtener el mejor match
-                matched_agent_id1, match_score, conversation1 = top_matches[0] #top1
-                matched_agent_id2, match_score, conversation2 = top_matches[1] #top2
+                
+                matched_agent_id1, match_score, preferencias1,conversation1 = top_matches_final.iloc[0] #top1
+                matched_agent_id2, match_score, preferencias2,conversation2 = top_matches_final.iloc[1] #top2
+                matched_agent_id3, match_score, preferencias3,conversation3 = top_matches_final.iloc[2] #top2
                 
                 # Encontrar el agente correspondiente
                 matched_agent1 = next(agent for agent in agents if agent.id_usuario == matched_agent_id1)
                 matched_agent2 = next(agent for agent in agents if agent.id_usuario == matched_agent_id2)
+                matched_agent3 = next(agent for agent in agents if agent.id_usuario == matched_agent_id3)
                 
                 # Generar el resumen del match usando el LLM
                 match_summary1 = jupiter_instance2.summarize_match_with_llm(selected_agent, matched_agent1, conversation1)
                 match_summary2 = jupiter_instance2.summarize_match_with_llm(selected_agent, matched_agent2, conversation2)
+                match_summary3 = jupiter_instance2.summarize_match_with_llm(selected_agent, matched_agent3, conversation3)
 
           
                 st.header("Potenciales Matches")
                 # Primera sección para el primer usuario
                 st.subheader(f"Usuario: ¨{matched_agent1.id_usuario}¨")
-                resumen_user_1 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", "Compatibilidad de preferencias ", key="user_1",height=400)
+                resumen_user_1 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", preferencias1, key="user_1",height=400)
                 resumen_user_2 = st.text_area(f"Compatibilidad de interaccion {matched_agent1.id_usuario}", match_summary1, key="user_2",height=400)
                 
                 # Espaciado entre las secciones
@@ -281,16 +287,16 @@ def proceso_pairing():
                 
                 # Segunda sección para el segundo usuario
                 st.subheader(f"Usuario: ¨{matched_agent2.id_usuario}¨")
-                resumen_user_3 = st.text_area(f"Compatibilidad de perfiles {matched_agent2.id_usuario}", "Compatibilidad de preferencias", key="user_3",height=400)
+                resumen_user_3 = st.text_area(f"Compatibilidad de perfiles {matched_agent2.id_usuario}", preferencias2, key="user_3",height=400)
                 resumen_user_4 = st.text_area(f"Compatibilidad de interaccion {matched_agent2.id_usuario}", match_summary2, key="user_4",height=400)
 
                  # Espaciado entre las secciones
                 st.write("---")
                 
-                # Segunda sección para el segundo usuario
-                st.subheader(f"Usuario: ¨{matched_agent2.id_usuario}¨")
-                resumen_user_5 = st.text_area(f"Compatibilidad de perfiles {matched_agent1.id_usuario}", "Compatibilidad conversacion", key="user_5",height=400)
-                resumen_user_6 = st.text_area(f"Compatibilidad de interaccion {matched_agent1.id_usuario}", "Compatibilidad de preferencias", key="user_6",height=400)
+                # Tercera sección para el tercer usuario
+                st.subheader(f"Usuario: ¨{matched_agent3.id_usuario}¨")
+                resumen_user_5 = st.text_area(f"Compatibilidad de perfiles {matched_agent3.id_usuario}", preferencias3, key="user_5",height=400)
+                resumen_user_6 = st.text_area(f"Compatibilidad de interaccion {matched_agent3.id_usuario}", match_summary3, key="user_6",height=400)
                 
              #generar_resumen(st.session_state.usuario_seleccionado)
     

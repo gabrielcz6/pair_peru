@@ -1,6 +1,7 @@
 import json
 from utils.db_connection.mongodb import MongoDBInserter
 import pandas as pd
+from utils.parse_combine_json import parse_json_from_string
 import openai
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -26,6 +27,21 @@ class jupiter_class:
     for i, documento in enumerate(self.documentos, 1):
        self.profiles.append(documento)
 
+ def simulate_preferencias(self, agent1, agent2):
+     
+    preferencias=agent1.generate_comparation(agent2)
+    preferencias=parse_json_from_string(preferencias)
+    if preferencias==None:
+                score=0
+    else:     
+                score=len(preferencias)
+
+    #guardando la conversacion y el score en la bd
+    inserter= MongoDBInserter()
+    inserter.insertar_preferencias_pairing(agent1.id_usuario,agent2.id_usuario,preferencias,score)            
+    inserter.close_connection()
+    return preferencias,score            
+     
  def simulate_conversation(self, agent1, agent2, turns=3):
     """
     Simula una conversación entre dos agentes durante varios turnos.
@@ -82,15 +98,23 @@ class jupiter_class:
     inserter= MongoDBInserter()
     
     for agent in opposite_gender_agents:
-       #si no encuentra a con b ni b con a crea nueva converesacion
-       #vamos a comparar los agentes para tener una puntuacion objetiva calificado semanticamente:
-       comparation=selected_agent.generate_comparation(agent)
-       input(f"comparation: \n\n {comparation}")
-
-       score= 1 #comparation_score
-       matches.append((agent.id_usuario, score, comparation))
        
-       
+       #primero verifica si ya fue evaluado sus preferencias respecto a la otra pareja
+       if agent.id_usuario != selected_agent.id_usuario:  # Evitar autocomparación
+       #aca se busca la conversacion y score, si es que existe en la bd (simulate_conversation)
+           existpreferencias=inserter.busca_preferencias_pairing(selected_agent.id_usuario,agent.id_usuario)
+           if existpreferencias != False:
+               print("preferencias existente!")
+               preferencias,score=existpreferencias
+               
+           else:
+                  #si no encuentra a con b ni b con a crea nueva preferencias
+                  preferencias,score=self.simulate_preferencias(selected_agent,agent)
+                      
+           #input(f"comparation sin filtro {agent.id_usuario}: \n\n {comparation}\n\n")
+ 
+           matches.append((agent.id_usuario, score, preferencias))         
+    return matches   
 
 
  def find_top_matches_conversation(self, selected_agent, agents):
@@ -128,15 +152,44 @@ class jupiter_class:
            
             matches.append((agent.id_usuario, score, conversation))
 
-    # Ordenar por puntaje
+    return matches
+ 
+ def find_top_matches_final(self,usuario_seleccionado,top_matches_preferencia_pareja,top_matches_conversacion):
+    #input(f"selected agent = {usuario_seleccionado}")
+    #input(len(top_matches_preferencia_pareja))
 
-    matches = sorted(matches, key=lambda x: x[1], reverse=True)
+    #input(len(top_matches_conversacion))
+
+    # Generar lista final
+    lista_final = []
+    for item1 in top_matches_preferencia_pareja:
+        for item2 in top_matches_conversacion:
+            if item1[0] == item2[0]:  # Verificar si los usuarios son iguales
+                usuario = item1[0]
+                puntaje_promedio = (item1[1]*0.8 + item2[1]*0.2)
+                preferencias_encontradas = item1[2]
+                conversacion = item2[2]
+                lista_final.append((usuario, puntaje_promedio, preferencias_encontradas, conversacion))
     
-    #guardando los matches en la bd
-    inserter.insertar_matches(selected_agent.id_usuario,matches[0][0],matches[1][0])
+    #input(f"lista final: \n \n{lista_final}")
+    df_matches = pd.DataFrame(columns=["perfil","score","preferencias_encontradas","conversacion"])
+    i = 0
+    for match in lista_final:
+        df_matches.loc[i] = (match[0],match[1],match[2],match[3])
+        i = i + 1
+    df_matches.sort_values(by='score', ascending=False, inplace=True)
+    df_matches.reset_index(drop=True, inplace=True)
+    #input(df_matches)
+    #guardar en la bd los matches finales
+    
+    inserter=MongoDBInserter()
+    inserter.insertar_matches(usuario_seleccionado,df_matches.iloc[0]["perfil"],df_matches.iloc[1]["perfil"],df_matches.iloc[2]["perfil"])
     inserter.close_connection()
 
-    return matches
+        
+    #input(lista_final[1])
+    return df_matches
+    
  def generar_conversacion_display(self,usuario1,usuario2):
     """
     Utiliza GPT-4 para generar una buena conversacion para el display.
@@ -334,7 +387,7 @@ class GPTAgent:
                 {"role": "user", "parts": prompt}
             ]
         )
-       response_message = response.send_message(f"dame el json solo basandote en Mis Preferencias de pareja ideal.")
+       response_message = response.send_message(f"dame el json solo basandote en Mis Preferencias de pareja ideal")
        return response_message.text
 
     def generate_message(self, other_agent):
